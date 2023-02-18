@@ -21,7 +21,7 @@ create table contest (
     sponsorFee double not null,
     requirements varchar(1000) not null,
     check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$')),
-    check (regexp_like (contestStatus, '^(created|opened|closed|past)$')),
+    check (contestStatus in ('created','opened','closed','past')),
     check (sponsorFee >= 0),
     check (datediff(endDate,startDate) >= 1),
     unique (walletAddress),
@@ -87,7 +87,21 @@ create table contestJudge (
 create table contestSponsor (
 	contestWallet varchar(42) not null,
     sponsorWallet varchar(42) not null,
-    unique (contesteWallet),
+    unique (contestWallet),
 	foreign key (contestWallet) references contest (walletAddress),
 	foreign key (sponsorWallet) references sponsor (walletAddress),
     primary key (contestWallet));
+    
+#######################
+# TRIGGER CONSTRAINTS #
+#######################
+delimiter $$
+create trigger numJudges before insert on contestJudge
+	for each row
+    begin
+		if (select count(judgeWallet) from contestJudge where contestWallet = new.contestWallet) >= 10
+        then set new.contestWallet = null;
+        end if;
+	end$$
+delimiter ;
+    
