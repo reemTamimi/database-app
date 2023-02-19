@@ -268,25 +268,139 @@ public class userDAO
     	connect_func();
         statement =  (Statement) connect.createStatement();
         
-        String[] INITIAL = {"drop database if exists testdb; ",
-					        "create database testdb; ",
-					        "use testdb; ",
-					        "drop table if exists User; ",
-					        ("CREATE TABLE if not exists User( " +
-					            "email VARCHAR(50) NOT NULL, " + 
-					            "firstName VARCHAR(10) NOT NULL, " +
-					            "lastName VARCHAR(10) NOT NULL, " +
-					            "password VARCHAR(20) NOT NULL, " +
-					            "birthday DATE NOT NULL, " +
-					            "adress_street_num VARCHAR(4) , "+ 
-					            "adress_street VARCHAR(30) , "+ 
-					            "adress_city VARCHAR(20)," + 
-					            "adress_state VARCHAR(2),"+ 
-					            "adress_zip_code VARCHAR(5),"+ 
-					            "cash_bal DECIMAL(13,2) DEFAULT 1000,"+ 
-					            "PPS_bal DECIMAL(13,2) DEFAULT 0,"+
-					            "PRIMARY KEY (email) "+"); ")
+        //############
+        //# ENTITIES #
+        //############
+        String[] INITDB = {"drop database if exists projdb;",
+        					"create database projdb;",
+        					"use projdb;"
         					};
+
+        String[] CONTESTANT = {"droptable if exists contestant;",
+        						("createtable contestant (" +
+        							"walletAddress varchar(42) not null," +
+        							"rewardBalance double," +
+        							"check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40})$'))," +
+        							"check (rewardBalance >= 0)," +
+        							"unique(walletAddress)," +
+        							"primary key (walletAddress));")
+        						};
+
+        String[] CONTEST = {"droptable if exists contest;",
+        					("createtable contest (" +
+        						"walletAddress varchar(42) not null," +
+        						"title varchar(100) not null," +
+        						"startDate date not null," +
+        						"endDate date not null," +
+        						"contestStatus varchar(20) not null," +
+        						"sponsorFee double not null," +
+        						"requirements varchar(1000) not null," +
+        						"check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$'))," +
+        						"check (contestStatus in ('created','opened','closed','past'))," +
+        						"check (sponsorFee >= 0)," +
+        						"check (datediff(endDate,startDate) >= 1)," +
+        						"unique (walletAddress)," +
+        						"primary key (walletAddress));")
+        					};
+
+        String[] SPONSOR = {"droptable if exists sponsor;",
+        					("createtable sponsor (" +
+        						"walletAddress varchar(42) not null," +
+        						"address varchar(200) not null," +
+        						"companyName varchar(100) not null," +
+        						"email varchar(100) not null," +
+        						"check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$'))," +
+        						"check (regexp_like (email, '.+@.+'))," +
+        						"primary key (walletAddress));")
+        					};
+
+        String[] JUDGE = {"droptable if exists judge;",
+        					("createtable judge (" +
+        					"walletAddress varchar(42) not null," +
+        					"rewardBalance double," +
+        					"check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$'))," +
+        					"check (rewardBalance >= 0)," +
+        					"primary key (walletAddress));")
+        					};
+
+        String[] SUBMISSION = {"droptable if exists submission;",
+        						("createtable submission (" +
+        							"contestantWallet varchar(42) not null," +
+        							"contestWallet varchar(42) not null," +
+        							"primary key (contestantWallet, contestWallet)," +
+        							"foreign key (contestantWallet) references contestant (walletAddress)," +
+        							"foreign key (contestWallet) references contest (walletAddress));")
+        						};
+
+
+        //#################
+        //# RELATIONSHIPS #
+        //#################
+        String[] REVIEW = {"droptable if exists review;",
+        					("createtable review (" +
+        						"judgeWallet varchar(42) not null," +
+        						"sponsorWallet varchar(42) not null," +
+        						"score int not null," +
+        						"reviewComment varchar(1000)," +
+        						"check (score >= 0 and score <= 10)," +
+        						"unique (sponsorWallet)," +
+        						"foreign key (judgeWallet) references judge (walletAddress)," +
+        						"foreign key (sponsorWallet) references sponsor (walletAddress)," +
+        						"primary key (sponsorWallet));")
+        					};
+
+        String[] SUBMISSIONGRADE = {"droptable if exists submissionGrade;",
+        							("createtable submissionGrade (" +
+        								"contestantWallet varchar(42) not null," +
+        								"contestWallet varchar(42) not null," +
+        								"judgeWallet varchar(42) not null," +
+        								"grade int not null," +
+        								"check (grade >= 0 and grade <= 100)," +
+        								"primary key (contestantWallet, contestWallet, judgeWallet)," +
+        								"foreign key (contestantWallet) references contestant (walletAddress)," +
+        								"foreign key (contestWallet) references contest (walletAddress)," +
+        								"foreign key (judgeWallet) references judge (walletAddress));")
+        							};
+
+        String[] CONTESTJUDGE = {"droptable if exists contestJudge;",
+        						("createtable contestJudge (" +
+        							"contestWallet varchar(42) not null," +
+        							"judgeWallet varchar(42) not null," +
+        							"foreign key (contestWallet) references contest (walletAddress)," +
+        							"foreign key (judgeWallet) references judge (walletAddress)," +
+        							"unique (contestWallet, judgeWallet)," +
+        							"primary key (contestWallet, judgeWallet));")
+        						};
+
+        String[] CONTESTSPONSOR = {"droptable if exists contestSponsor;",
+        							("createtable contestSponsor (" +
+        								"contestWallet varchar(42) not null," +
+        								"sponsorWallet varchar(42) not null," +
+        								"unique (contestWallet)," +
+        								"foreign key (contestWallet) references contest (walletAddress)," +
+        								"foreign key (sponsorWallet) references sponsor (walletAddress)," +
+        								"primary key (contestWallet));")
+        							};
+
+        //#######################
+        //# TRIGGER CONSTRAINTS #
+        //#######################
+        String[] NUMJUDGES = {"droptrigger if exists numJudges;",
+        						("delimiter$$" +
+        						"createtrigger numJudges before insert on contestJudge" +
+        						"for each row" +
+        						"begin" +
+        						"if (select count(judgeWallet) from contestJudge where contestWallet = new.contestWallet) >= 10" +
+        						"then set new.contestWallet = null;" +
+        						"end if;" +
+        						"end$$" +
+        						"delimiter;")
+        					};
+
+
+        
+        		
+					        
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, birthday, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, cash_bal, PPS_bal)"+
         			"values ('susie@gmail.com', 'Susie ', 'Guzman', 'susie1234', '2000-06-27', '1234', 'whatever street', 'detroit', 'MI', '48202','1000', '0'),"+
 			    		 	"('don@gmail.com', 'Don', 'Cummings','don123', '1969-03-20', '1000', 'hi street', 'mama', 'MO', '12345','1000', '0'),"+
@@ -302,8 +416,15 @@ public class userDAO
 			    			};
         
         //for loop to put these in database
+        String[][] INITIAL = {
+        					INITDB, CONTESTANT, CONTEST, SPONSOR,
+        					JUDGE, SUBMISSION, REVIEW, SUBMISSIONGRADE,
+        					CONTESTJUDGE, CONTESTSPONSOR
+        					};
+        
         for (int i = 0; i < INITIAL.length; i++)
-        	statement.execute(INITIAL[i]);
+        	for (int j = 0; j < INITIAL[i].length; j++)
+        		statement.execute(INITIAL[i][j]);
         for (int i = 0; i < TUPLES.length; i++)	
         	statement.execute(TUPLES[i]);
         disconnect();
