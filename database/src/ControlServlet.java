@@ -96,19 +96,20 @@ public class ControlServlet extends HttpServlet {
 	    
 	    
 	    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	    	 String email = request.getParameter("email");
-	    	 String password = request.getParameter("password");
+	    	 //String email = request.getParameter("email");
+	    	 String walletAddress = request.getParameter("walletAddress");
+	    	 String pass = request.getParameter("pass");
 	    	 
-	    	 if (email.equals("root") && password.equals("pass1234")) {
+	    	 if (walletAddress.equals("root") && pass.equals("pass1234")) {
 				 System.out.println("Login Successful! Redirecting to root");
 				 session = request.getSession();
-				 session.setAttribute("username", email);
+				 session.setAttribute("username", walletAddress);
 				 rootPage(request, response, "");
 	    	 }
-	    	 else if(userDAO.isValid(email, password)) 
+	    	 else if(userDAO.isValid(walletAddress, pass)) 
 	    	 {
 			 	 
-			 	 currentUser = email;
+			 	 currentUser = walletAddress;
 				 System.out.println("Login Successful! Redirecting");
 				 request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 			 			 			 			 
@@ -120,7 +121,11 @@ public class ControlServlet extends HttpServlet {
 	    }
 	           
 	    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	    	String email = request.getParameter("email");
+	    	String walletAddress = request.getParameter("walletAddress");
+	    	String pass = request.getParameter("pass");
+	    	String userRole = request.getParameter("userRole");
+	    	String confirm = request.getParameter("confirmation");
+	    	/*String email = request.getParameter("email");
 	   	 	String firstName = request.getParameter("firstName");
 	   	 	String lastName = request.getParameter("lastName");
 	   	 	String password = request.getParameter("password");
@@ -130,12 +135,13 @@ public class ControlServlet extends HttpServlet {
 	   	 	String adress_city = request.getParameter("adress_city"); 
 	   	 	String adress_state = request.getParameter("adress_state"); 
 	   	 	String adress_zip_code = request.getParameter("adress_zip_code"); 	   	 	
-	   	 	String confirm = request.getParameter("confirmation");
+	   	 	String confirm = request.getParameter("confirmation");*/
 	   	 	
-	   	 	if (password.equals(confirm)) {
-	   	 		if (!userDAO.checkEmail(email)) {
+	   	 	if (pass.equals(confirm)) {
+	   	 		if (!userDAO.checkEmail(walletAddress)) {
 		   	 		System.out.println("Registration Successful! Added to database");
-		            user users = new user(email,firstName, lastName, password, birthday, adress_street_num,  adress_street,  adress_city,  adress_state,  adress_zip_code, 1000,0);
+		            //user users = new user(email,firstName, lastName, password, birthday, adress_street_num,  adress_street,  adress_city,  adress_state,  adress_zip_code, 1000,0);
+		   	 		user users = new user(walletAddress,pass,userRole);
 		   	 		userDAO.insert(users);
 		   	 		response.sendRedirect("login.jsp");
 	   	 		}
