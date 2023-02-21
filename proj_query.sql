@@ -7,7 +7,7 @@ use projdb;
 create table contestant (
 	walletAddress varchar(42) not null,
 	rewardBalance double,
-    check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40})$')),
+    check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40}|root)$')),
     check (rewardBalance >= 0),
     unique(walletAddress),
     primary key (walletAddress));
@@ -20,7 +20,7 @@ create table contest (
     contestStatus varchar(20) not null,
     sponsorFee double not null,
     requirements varchar(1000) not null,
-    check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$')),
+    check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40}|root)$')),
     check (contestStatus in ('created','opened','closed','past')),
     check (sponsorFee >= 0),
     check (datediff(endDate,startDate) >= 1),
@@ -32,14 +32,14 @@ create table sponsor (
     address varchar(200) not null,
     companyName varchar(100) not null,
     email varchar(100) not null,
-    check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$')),
+    check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40}|root)$')),
     check (regexp_like (email, '.+@.+')),
     primary key (walletAddress));
     
 create table judge (
 	walletAddress varchar(42) not null,
     rewardBalance double,
-    check (regexp_like (walletAddress, '^([0xA-F[:digit:]]{40})$')),
+    check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40}|root)$')),
     check (rewardBalance >= 0),
     primary key (walletAddress));
     
@@ -50,7 +50,7 @@ create table submission (
     foreign key (contestantWallet) references contestant (walletAddress),
     foreign key (contestWallet) references contest (walletAddress));
     
-create table user (
+create table users (
 	walletAddress varchar(42) not null,
     pass varchar(20) not null,
     userRole varchar(20) not null,
