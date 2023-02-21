@@ -50,6 +50,12 @@ create table submission (
     foreign key (contestantWallet) references contestant (walletAddress),
     foreign key (contestWallet) references contest (walletAddress));
     
+create table user (
+	walletAddress varchar(42) not null,
+    pass varchar(20) not null,
+    userRole varchar(20) not null,
+    check (userRole in ('root','sponsor','judge','contestant')),
+    primary key (walletAddress));
 
 #################
 # RELATIONSHIPS #
