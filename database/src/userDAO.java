@@ -156,7 +156,7 @@ public class userDAO
         ResultSet resultSet = preparedStatement.executeQuery();
          
         if (resultSet.next()) {
-            String walletAddress = resultSet.getString("walletAddress");
+            // String walletAddress = resultSet.getString("walletAddress");
             String pass = resultSet.getString("pass");
             String userRole = resultSet.getString("userRole");
             user = new user(walletAddress, pass, userRole);
