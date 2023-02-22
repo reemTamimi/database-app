@@ -44,24 +44,24 @@ public class user
 	    }
 	    
 	   //getter and setter methods
-	    public String getWalletAddress() {
+	    public String getWallet() {
 	        return walletAddress;
 	    }
-	    public void setWalletAddress(String walletAddress) {
+	    public void setWallet(String walletAddress) {
 	        this.walletAddress = walletAddress;
 	    }
 	    
-	    public String getPassword() {
+	    public String getPass() {
 	        return pass;
 	    }
-	    public void setPassword(String pass) {
+	    public void setPass(String pass) {
 	        this.pass = pass;
 	    }
 	    
-	    public String getUserRole() {
+	    public String getRole() {
 	        return userRole;
 	    }
-	    public void setUserRole(String userRole) {
+	    public void setRole(String userRole) {
 	        this.userRole = userRole;
 	    }
 	}
