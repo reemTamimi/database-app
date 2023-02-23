@@ -10,29 +10,17 @@
 		<form action="register">
 			<table border="1" cellpadding="5">
 				<tr>
-					<th>Username: </th>
+					<th>Wallet Address: </th>
 					<td align="center" colspan="3">
-						<input type="text" name="email" size="45"  value="example@gmail.com" onfocus="this.value=''">
+						<input type="text" name="walletAddress" size="42"  value="0x000000000000000000000000000000000000000A" onfocus="this.value=''">
 					</td>
 				</tr>
+				
 				<tr>
-					<th>First Name: </th>
+					<th>Role: </th>
 					<td align="center" colspan="3">
-						<input type="text" name="firstName" size="45" value="FirstName" onfocus="this.value=''">
+						<input type="text" name="userRole" size="45" value="Role" onfocus="this.value=''">
 					</td>
-				</tr>
-				<tr>
-					<th>Last Name: </th>
-					<td align="center" colspan="3">
-						<input type="text" name="lastName" size="45" value="LastName" onfocus="this.value=''">
-					</td>
-				</tr>
-				<tr>
-					<th>Birthday: </th>
-					<td align="center" colspan="3">
-						<input type="text" name="birthday" size="45" value="YYYY-MM-DD" onfocus="this.value=''">
-					</td>
-	
 				</tr>
 				<tr>
 					<th>Password: </th>

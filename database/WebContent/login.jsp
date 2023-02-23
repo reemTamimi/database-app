@@ -13,15 +13,15 @@
 		<form action="login" method="post">
 			<table border="1" cellpadding="5">
 				<tr>
-					<th>Username: </th>
+					<th>Wallet Address: </th>
 					<td>
-						<input type="text" name="email" size="45" autofocus>
+						<input type="text" name="walletAddress" size="45" autofocus>
 					</td>
 				</tr>
 				<tr>
 					<th>Password: </th>
 					<td> 
-						<input type="password" name="password" size="45">
+						<input type="password" name="pass" size="45">
 					</td>
 				</tr>
 				<tr>
