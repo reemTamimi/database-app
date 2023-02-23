@@ -34,14 +34,14 @@
             </tr>
             <c:forEach var="users" items="${listUser}">
                 <tr style="text-align:center">
-                    <td><c:out value="${users.walletAddress}" /></td>
-                    <td><c:out value="${users.userRole}" /></td>
-                    <td><c:out value="${users.pass}" /></td>
-                    <!-- <td><c:out value= "${users.adress_street_num} ${users.adress_street} ${users.adress_city} ${users.adress_state} ${users.adress_zip_code}" /></td>
+                    <td><c:out value="${users.getWallet()}" /></td>
+                    <td><c:out value="${users.getRole()}" /></td>
+                    <td><c:out value="${users.getPass()}" /></td>
+                    <%-- <td><c:out value= "${users.adress_street_num} ${users.adress_street} ${users.adress_city} ${users.adress_state} ${users.adress_zip_code}" /></td>
                     <td><c:out value="${users.password}" /></td>
                     <td><c:out value="${users.birthday}" /></td>
                     <td><c:out value="${users.cash_bal}"/></td>
-                    <td><c:out value="${users.PPS_bal}" /></td> -->
+                    <td><c:out value="${users.PPS_bal}" /></td> --%>
             </c:forEach>
         </table>
 	</div>
