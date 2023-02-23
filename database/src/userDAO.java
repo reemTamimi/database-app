@@ -240,7 +240,7 @@ public class userDAO
         					"use projdb;"
         					};
 
-        String[] CONTESTANT = {"droptable if exists contestant;",
+        String[] CONTESTANT = {"drop table if exists contestant;",
         						("create table contestant (" +
         							"walletAddress varchar(42) not null," +
         							"rewardBalance double," +
@@ -250,7 +250,7 @@ public class userDAO
         							"primary key (walletAddress));")
         						};
 
-        String[] CONTEST = {"droptable if exists contest;",
+        String[] CONTEST = {"drop table if exists contest;",
         					("create table contest (" +
         						"walletAddress varchar(42) not null," +
         						"title varchar(100) not null," +
@@ -267,7 +267,7 @@ public class userDAO
         						"primary key (walletAddress));")
         					};
 
-        String[] SPONSOR = {"droptable if exists sponsor;",
+        String[] SPONSOR = {"drop table if exists sponsor;",
         					("create table sponsor (" +
         						"walletAddress varchar(42) not null," +
         						"address varchar(200) not null," +
@@ -278,7 +278,7 @@ public class userDAO
         						"primary key (walletAddress));")
         					};
 
-        String[] JUDGE = {"droptable if exists judge;",
+        String[] JUDGE = {"drop table if exists judge;",
         					("create table judge (" +
         					"walletAddress varchar(42) not null," +
         					"rewardBalance double," +
@@ -287,7 +287,7 @@ public class userDAO
         					"primary key (walletAddress));")
         					};
 
-        String[] SUBMISSION = {"droptable if exists submission;",
+        String[] SUBMISSION = {"drop table if exists submission;",
         						("create table submission (" +
         							"contestantWallet varchar(42) not null," +
         							"contestWallet varchar(42) not null," +
@@ -296,7 +296,7 @@ public class userDAO
         							"foreign key (contestWallet) references contest (walletAddress));")
         						};
         
-        String[] USERS = {"droptable if exists users;",
+        String[] USERS = {"drop table if exists users;",
         					("create table users (" +
 			        		"walletAddress varchar(42) not null," +
 			        		"pass varchar(20) not null," +
@@ -309,7 +309,7 @@ public class userDAO
         //#################
         //# RELATIONSHIPS #
         //#################
-        String[] REVIEW = {"droptable if exists review;",
+        String[] REVIEW = {"drop table if exists review;",
         					("create table review (" +
         						"judgeWallet varchar(42) not null," +
         						"sponsorWallet varchar(42) not null," +
@@ -322,7 +322,7 @@ public class userDAO
         						"primary key (sponsorWallet));")
         					};
 
-        String[] SUBMISSIONGRADE = {"droptable if exists submissionGrade;",
+        String[] SUBMISSIONGRADE = {"drop table if exists submissionGrade;",
         							("create table submissionGrade (" +
         								"contestantWallet varchar(42) not null," +
         								"contestWallet varchar(42) not null," +
@@ -335,7 +335,7 @@ public class userDAO
         								"foreign key (judgeWallet) references judge (walletAddress));")
         							};
 
-        String[] CONTESTJUDGE = {"droptable if exists contestJudge;",
+        String[] CONTESTJUDGE = {"drop table if exists contestJudge;",
         						("create table contestJudge (" +
         							"contestWallet varchar(42) not null," +
         							"judgeWallet varchar(42) not null," +
@@ -345,7 +345,7 @@ public class userDAO
         							"primary key (contestWallet, judgeWallet));")
         						};
 
-        String[] CONTESTSPONSOR = {"droptable if exists contestSponsor;",
+        String[] CONTESTSPONSOR = {"drop table if exists contestSponsor;",
         							("create table contestSponsor (" +
         								"contestWallet varchar(42) not null," +
         								"sponsorWallet varchar(42) not null," +
@@ -358,7 +358,7 @@ public class userDAO
         //#######################
         //# TRIGGER CONSTRAINTS #
         //#######################
-        String[] NUMJUDGES = {"droptrigger if exists numJudges;",
+        String[] NUMJUDGES = {"drop trigger if exists numJudges;",
         						("delimiter$$" +
         						"create trigger numJudges before insert on contestJudge" +
         						"for each row" +
@@ -388,16 +388,16 @@ public class userDAO
         		};
         			
         	String[] IN_CONTEST = {("insert into contest(walletAddress, title, startDate, endDate, contestStatus, sponsorFee, requirements)" +
-        		"values ('0x000000000000000000000000000000000000001B', 'Contest1', '03-19-2023', '04-28-2023', 'created', 10000, 'Req1')," +
-        			"('0x000000000000000000000000000000000000002B', 'Contest2', '02-19-2023', '03-28-2023', 'opened', 10000, 'Req2')," +
-        			"('0x000000000000000000000000000000000000003B', 'Contest3', '02-19-2023', '03-28-2023', 'opened', 10000, 'Req3')," +
-        			"('0x000000000000000000000000000000000000004B', 'Contest4', '01-19-2023', '02-19-2023', 'closed', 10000, 'Req4')," +
-        			"('0x000000000000000000000000000000000000005B', 'Contest5', '01-19-2023', '02-19-2023', 'closed', 10000, 'Req5')," +
-        			"('0x000000000000000000000000000000000000006B', 'Contest6', '01-19-2023', '02-19-2023', 'closed', 10000, 'Req6')," +
-        			"('0x000000000000000000000000000000000000007B', 'Contest7', '01-19-2023', '02-19-2023', 'closed', 10000, 'Req7')," +
-        			"('0x000000000000000000000000000000000000008B', 'Contest8', '02-19-2022', '03-28-2022', 'past', 10000, 'Req8')," +
-        			"('0x000000000000000000000000000000000000009B', 'Contest9', '02-19-2022', '03-28-2022', 'past', 10000, 'Req9')," +
-        			"('0x00000000000000000000000000000000000000AB', 'Contest10', '02-19-2022', '03-28-2022', 'past', 10000, 'Req10');")
+        		"values ('0x000000000000000000000000000000000000001B', 'Contest1', '2023-03-19-2023', '2023-04-28', 'created', 10000, 'Req1')," +
+        			"('0x000000000000000000000000000000000000002B', 'Contest2', '2023-02-19', '2023-03-28', 'opened', 10000, 'Req2')," +
+        			"('0x000000000000000000000000000000000000003B', 'Contest3', '2023-02-19', '2023-03-28', 'opened', 10000, 'Req3')," +
+        			"('0x000000000000000000000000000000000000004B', 'Contest4', '2023-01-19', '2023-02-19', 'closed', 10000, 'Req4')," +
+        			"('0x000000000000000000000000000000000000005B', 'Contest5', '2023-01-19', '2023-02-19', 'closed', 10000, 'Req5')," +
+        			"('0x000000000000000000000000000000000000006B', 'Contest6', '2023-01-19', '2023-02-19', 'closed', 10000, 'Req6')," +
+        			"('0x000000000000000000000000000000000000007B', 'Contest7', '2023-01-19', '2023-02-19', 'closed', 10000, 'Req7')," +
+        			"('0x000000000000000000000000000000000000008B', 'Contest8', '2022-02-19', '2022-03-28', 'past', 10000, 'Req8')," +
+        			"('0x000000000000000000000000000000000000009B', 'Contest9', '2022-02-19', '2022-03-28', 'past', 10000, 'Req9')," +
+        			"('0x00000000000000000000000000000000000000AB', 'Contest10', '2022-02-19', '2022-03-28', 'past', 10000, 'Req10');")
         		};
         			
         	String[] IN_SPONSOR = {("insert into sponsor(walletAddress, address, companyName, email)" +
