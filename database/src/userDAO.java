@@ -26,7 +26,7 @@ import java.util.List;
 @WebServlet("/userDAO")
 public class userDAO 
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 391838L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
@@ -45,7 +45,7 @@ public class userDAO
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e);
             }
-            connect = (Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/testdb?allowPublicKeyRetrieval=true&useSSL=false&user=john&password=pass1234");
+            connect = (Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/projdb?allowPublicKeyRetrieval=true&useSSL=false&user=john&password=john1234");
             System.out.println(connect);
         }
     }
