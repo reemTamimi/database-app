@@ -122,7 +122,7 @@ public class ControlServlet extends HttpServlet {
 	           
 	    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
 	    	String walletAddress = request.getParameter("walletAddress");
-	    	String pass = request.getParameter("pass");
+	    	String pass = request.getParameter("password");
 	    	String userRole = request.getParameter("userRole");
 	    	String confirm = request.getParameter("confirmation");
 	    	/*String email = request.getParameter("email");
