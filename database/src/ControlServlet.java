@@ -99,25 +99,37 @@ public class ControlServlet extends HttpServlet {
 	    	 //String email = request.getParameter("email");
 	    	 String walletAddress = request.getParameter("walletAddress");
 	    	 String pass = request.getParameter("pass");
-	    	 
-	    	 if (walletAddress.equals("root") && pass.equals("pass1234")) {
-				 System.out.println("Login Successful! Redirecting to root");
-				 session = request.getSession();
-				 session.setAttribute("username", walletAddress);
-				 rootPage(request, response, "");
-	    	 }
-	    	 else if(userDAO.isValid(walletAddress, pass)) 
-	    	 {
-			 	 
-			 	 currentUser = walletAddress;
-				 System.out.println("Login Successful! Redirecting");
-				 request.getRequestDispatcher("activitypage.jsp").forward(request, response);
-			 			 			 			 
-	    	 }
-	    	 else {
-	    		 request.setAttribute("loginStr","Login Failed: Please check your credentials.");
-	    		 request.getRequestDispatcher("login.jsp").forward(request, response);
-	    	 }
+	    	 String userRole = userDAO.getUser(walletAddress).getRole();
+	    	 String targPage = "";
+
+			if (walletAddress.equals("root") && pass.equals("pass1234")) {
+				System.out.println("Login Successful! Redirecting to root");
+				session = request.getSession();
+				session.setAttribute("username", walletAddress);
+				rootPage(request, response, "");
+			} else {
+				switch(userRole) {
+					case "sponsor":
+						targPage = "sponsorView.jsp";
+						break;
+					case "contestant":
+						targPage = "contestantView.jsp";
+						break;
+					case "judge":
+						targPage = "judgeView.jsp";
+						break;
+					default:
+						System.out.println("Login unsuccessful! User role appears to be invalid...");
+				}
+				if(userDAO.isValid(walletAddress, pass)) {
+		 			currentUser = walletAddress;
+		 			System.out.println("Login Successful! Redirecting");
+		 			request.getRequestDispatcher(targPage).forward(request, response);
+		 		} else {
+	   	    		request.setAttribute("loginStr","Login Failed: Please check your credentials.");
+		    		request.getRequestDispatcher("login.jsp").forward(request, response);
+		 		}
+			}
 	    }
 	           
 	    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
@@ -125,17 +137,6 @@ public class ControlServlet extends HttpServlet {
 	    	String pass = request.getParameter("password");
 	    	String userRole = request.getParameter("userRole");
 	    	String confirm = request.getParameter("confirmation");
-	    	/*String email = request.getParameter("email");
-	   	 	String firstName = request.getParameter("firstName");
-	   	 	String lastName = request.getParameter("lastName");
-	   	 	String password = request.getParameter("password");
-	   	 	String birthday = request.getParameter("birthday");
-	   	 	String adress_street_num = request.getParameter("adress_street_num"); 
-	   	 	String adress_street = request.getParameter("adress_street"); 
-	   	 	String adress_city = request.getParameter("adress_city"); 
-	   	 	String adress_state = request.getParameter("adress_state"); 
-	   	 	String adress_zip_code = request.getParameter("adress_zip_code"); 	   	 	
-	   	 	String confirm = request.getParameter("confirmation");*/
 	   	 	
 	   	 	if (pass.equals(confirm)) {
 	   	 		if (!userDAO.checkWallet(walletAddress)) {
