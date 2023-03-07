@@ -66,7 +66,7 @@
 				</tr> -->
 			</table>
 			<h3>Sponsors:</h3>
-			<p>test</p>
+			<p>test1</p>
 			<c:forEach var="users" items="${listUser}">
 				<p><c:out value="${users.getWallet()}" /></p>
 			</c:forEach>
