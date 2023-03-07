@@ -144,6 +144,7 @@ public class userDAO
     }
     
     public user getUser(String walletAddress) throws SQLException {
+    	
     	user user = null;
         String sql = "SELECT * FROM users WHERE walletAddress = ?";
          
@@ -160,9 +161,10 @@ public class userDAO
             String userRole = resultSet.getString("userRole");
             user = new user(walletAddress, pass, userRole);
         }
+
          
         resultSet.close();
-        statement.close();
+        preparedStatement.close();
          
         return user;
     }
@@ -388,7 +390,7 @@ public class userDAO
         		};
         			
         	String[] IN_CONTEST = {("insert into contest(walletAddress, title, startDate, endDate, contestStatus, sponsorFee, requirements)" +
-        		"values ('0x000000000000000000000000000000000000001B', 'Contest1', '2023-03-19-2023', '2023-04-28', 'created', 10000, 'Req1')," +
+        		"values ('0x000000000000000000000000000000000000001B', 'Contest1', '2023-03-19', '2023-04-28', 'created', 10000, 'Req1')," +
         			"('0x000000000000000000000000000000000000002B', 'Contest2', '2023-02-19', '2023-03-28', 'opened', 10000, 'Req2')," +
         			"('0x000000000000000000000000000000000000003B', 'Contest3', '2023-02-19', '2023-03-28', 'opened', 10000, 'Req3')," +
         			"('0x000000000000000000000000000000000000004B', 'Contest4', '2023-01-19', '2023-02-19', 'closed', 10000, 'Req4')," +
