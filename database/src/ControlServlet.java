@@ -96,12 +96,15 @@ public class ControlServlet extends HttpServlet {
 	    
 	    
 	    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	    	 //String email = request.getParameter("email");
+   	 		
 	    	 String walletAddress = request.getParameter("walletAddress");
 	    	 String pass = request.getParameter("pass");
-	    	 String userRole = userDAO.getUser(walletAddress).getRole();
+	    	 String userRole = this.userDAO.getUser(walletAddress).getRole();
+	   	 		System.out.println("role gathered...");
 	    	 String targPage = "";
-
+	    	 
+	    	 System.out.println("Role check proceeding...");
+	    	 
 			if (walletAddress.equals("root") && pass.equals("pass1234")) {
 				System.out.println("Login Successful! Redirecting to root");
 				session = request.getSession();
