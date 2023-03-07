@@ -73,7 +73,7 @@ public class userDAO
                 throw new SQLException(e);
             }
             connect = (Connection) DriverManager
-  			      .getConnection("jdbc:mysql://127.0.0.1:3306/userdb?"
+  			      .getConnection("jdbc:mysql://127.0.0.1:3306/projdb?"
   			          + "useSSL=false&user=" + username + "&password=" + password);
             System.out.println(connect);
         }
@@ -446,7 +446,7 @@ public class userDAO
         //##############
         //# FILL TABLE #
         //##############
-        String[] IN_CONTESTANT = {"use projdb;",
+        String[] IN_CONTESTANT = {
         		("insert into contestant(walletAddress, rewardBalance)" +
         			"values ('0x000000000000000000000000000000000000001A',0)," +
         			"('0x000000000000000000000000000000000000002A',0)," +
