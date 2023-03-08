@@ -99,6 +99,39 @@ public class userDAO
         return listUser;
     }
     
+    public List<contest> listContests(String pattern) throws SQLException {
+        List<contest> listContest = new ArrayList<contest>();        
+        String sql = "SELECT * FROM contest";    
+        if (pattern != "") {
+        	sql = sql + " WHERE title LIKE '%" + pattern + "%'";
+        }
+        connect_func();
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            String title = resultSet.getString("title");
+   		 	String startDate = resultSet.getString("startDate");
+   		 	String endDate = resultSet.getString("endDate");
+   		 	String contestStatus = resultSet.getString("contestStatus");
+   		 	double sponsorFee = resultSet.getDouble("sponsorFee");
+   		 	String requirements = resultSet.getString("requirements");
+            
+            contest contests = new contest(walletAddress,title);
+            contests.setStartDate(startDate);
+            contests.setEndDate(endDate);
+            contests.setStatus(contestStatus);
+            contests.setFee(sponsorFee);
+            contests.setRequirements(requirements);
+            
+            listContest.add(contests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listContest;
+    }
+    
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
