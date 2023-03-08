@@ -23,13 +23,6 @@
 					</td>
 				</tr>
 				
-				<%----<tr>
-					<th>Role: </th>
-					<td align="center" colspan="3">
-						<input type="text" name="userRole" size="45" value="Role" onfocus="this.value=''">
-					</td>
-				</tr> --%>
-				
 				<tr>
 					<th>Password: </th>
 					<td align="center" colspan="3"> 
