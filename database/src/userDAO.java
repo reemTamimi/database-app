@@ -101,9 +101,9 @@ public class userDAO
     
     public List<contest> listContests(String pattern) throws SQLException {
         List<contest> listContest = new ArrayList<contest>();        
-        String sql = "SELECT * FROM contest";    
+        String sql = "SELECT * FROM contest WHERE contestStatus LIKE 'opened'";    
         if (pattern != "") {
-        	sql = sql + " WHERE title LIKE '%" + pattern + "%'";
+        	sql = sql + " AND title LIKE '%" + pattern + "%'";
         }
         connect_func();
         statement = (Statement) connect.createStatement();
