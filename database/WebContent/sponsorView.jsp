@@ -68,7 +68,8 @@
 			<h3>Sponsors:</h3>
 			<p>test1</p>
 			<c:forEach var="users" items="${listUser}">
-				<p><c:out value="${users.getWallet()}" /></p>
+				<p>${users.getWallet()}</p>
+				<c:out value="${users.getWallet()}" />
 			</c:forEach>
 			<input type="submit" value="Create Contest"/>
 		</form>
