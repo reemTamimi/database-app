@@ -10,18 +10,17 @@
 </head>
 <body>
 
-<div align = "center">
+<div align="center">
 	
-	<form action = "search">
-		<input type = "text" value = ""/>
-		<input type = "submit" value = "Search!"/>
+	<form action = "contestant_search_button">
+		<input type="text" name="pattern" value=""/>
+		<input type="submit" value="Search!"/>
 	</form>
-	<a href="login.jsp"target ="_self" > logout</a><br><br> 
+	<a href="login.jsp" target="_self" > logout</a><br><br> 
 
-<h1>List all users</h1>
+<h1>List of contests</h1>
     <div align="center">
         <table border="1" cellpadding="6">
-            <caption><h2>List of Contests</h2></caption>
             <tr>
                 <th>Title</th>
                 <th>Start Date</th>
@@ -29,17 +28,19 @@
                 <th>Requirements</th>
                 <th>Status</th>
                 <th>Reward</th>
-                <th> - - - - - </th>
+                <th></th>
+                <th></th>
             </tr>
             <c:forEach var="contests" items="${listContest}">
                 <tr style="text-align:center">
                     <td><c:out value="${contests.getTitle()}" /></td>
-                    <td><c:out value="${contests.getStart()}" /></td>
-                    <td><c:out value="${contests.getEnd()}" /></td>
+                    <td><c:out value="${contests.getStartDate()}" /></td>
+                    <td><c:out value="${contests.getEndDate()}" /></td>
                     <td><c:out value="${contests.getRequirements()}" /></td>
                     <td><c:out value="${contests.getStatus()}" /></td>
-                    <td><c:out value="${contests.getReward()}" /></td>
-                    <td><input type = "submit" value = "Submit!"/></td>
+                    <td><c:out value="${contests.getFee()}" /></td>
+                    <td><c:if test="${contests.getStatus()=='opened'}"><input type = "file"/></c:if></td>
+                    <td><c:if test="${contests.getStatus()=='opened'}"><input type = "submit" value = "Submit!"/></c:if></td>
             </c:forEach>
         </table>
 	</div>
