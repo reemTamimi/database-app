@@ -99,6 +99,44 @@ public class userDAO
         return listUser;
     }
     
+    public List<judge> listAllJudges() throws SQLException {
+        List<judge> listJudge = new ArrayList<judge>();        
+        String sql = "SELECT * FROM judge";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            double balance = resultSet.getDouble("rewardBalance");
+            
+            judge judges = new judge(walletAddress,balance);
+            listJudge.add(judges);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listJudge;
+    }
+    
+    public List<submission> listSubmissions(String activeJudge) throws SQLException {
+        List<submission> listSubmission = new ArrayList<submission>();        
+        String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT * FROM contestjudge where judgeWallet like '" + activeJudge + "')";
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String contestantWallet = resultSet.getString("contestantWallet");
+            String contestWallet = resultSet.getString("contestWallet");
+            
+            submission submissions = new submission(contestantWallet,contestWallet);
+            listSubmission.add(submissions);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listSubmission;
+    }
+    
     public List<contest> listContests(String pattern) throws SQLException {
         List<contest> listContest = new ArrayList<contest>();        
         String sql = "SELECT * FROM contest WHERE contestStatus LIKE 'opened'";    
