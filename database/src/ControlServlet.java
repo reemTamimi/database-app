@@ -61,6 +61,9 @@ public class ControlServlet extends HttpServlet {
         	case "/root":
         		rootPage(request,response, "");
         		break;
+        	case "/contestant_search_button":
+        		contestantPage(request,response,request.getParameter("pattern"));
+        		break;
         	case "/logout":
         		logout(request,response);
         		break;
@@ -94,16 +97,20 @@ public class ControlServlet extends HttpServlet {
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
+	    private void contestantPage(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
+	    	System.out.println("contestant view");
+			request.setAttribute("listContest", userDAO.listContests(pattern));
+	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
+	    }
+	    
 	    
 	    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
    	 		
 	    	 String walletAddress = request.getParameter("walletAddress");
 	    	 String pass = request.getParameter("pass");
 	    	 String userRole = this.userDAO.getUser(walletAddress).getRole();
-	   	 		System.out.println("role gathered...");
 	    	 String targPage = "";
-	    	 
-	    	 System.out.println("Role check proceeding...");
+	    	
 	    	 
 			if (walletAddress.equals("root") && pass.equals("pass1234")) {
 				System.out.println("Login Successful! Redirecting to root");
@@ -116,6 +123,10 @@ public class ControlServlet extends HttpServlet {
 						targPage = "sponsorView.jsp";
 						break;
 					case "contestant":
+						System.out.println("Login Successful! Redirecting to contestant");
+						session = request.getSession();
+						session.setAttribute("username", walletAddress);
+						contestantPage(request, response, "");
 						targPage = "contestantView.jsp";
 						break;
 					case "judge":
@@ -124,14 +135,14 @@ public class ControlServlet extends HttpServlet {
 					default:
 						System.out.println("Login unsuccessful! User role appears to be invalid...");
 				}
-				if(userDAO.isValid(walletAddress, pass)) {
-		 			currentUser = walletAddress;
-		 			System.out.println("Login Successful! Redirecting");
-		 			request.getRequestDispatcher(targPage).forward(request, response);
-		 		} else {
-	   	    		request.setAttribute("loginStr","Login Failed: Please check your credentials.");
-		    		request.getRequestDispatcher("login.jsp").forward(request, response);
-		 		}
+//				if(userDAO.isValid(walletAddress, pass)) {
+//		 			currentUser = walletAddress;
+//		 			System.out.println("Login Successful! Redirecting");
+//		 			request.getRequestDispatcher(targPage).forward(request, response);
+//		 		} else {
+//	   	    		request.setAttribute("loginStr","Login Failed: Please check your credentials.");
+//		    		request.getRequestDispatcher("login.jsp").forward(request, response);
+//		 		}
 			}
 	    }
 	           
@@ -144,7 +155,6 @@ public class ControlServlet extends HttpServlet {
 	   	 	if (pass.equals(confirm)) {
 	   	 		if (!userDAO.checkWallet(walletAddress)) {
 		   	 		System.out.println("Registration Successful! Added to database");
-		            //user users = new user(email,firstName, lastName, password, birthday, adress_street_num,  adress_street,  adress_city,  adress_state,  adress_zip_code, 1000,0);
 		   	 		user users = new user(walletAddress,pass,userRole);
 		   	 		userDAO.insert(users);
 		   	 		response.sendRedirect("login.jsp");
