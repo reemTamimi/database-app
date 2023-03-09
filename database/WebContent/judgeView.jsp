@@ -13,29 +13,19 @@
 
 	<a href="login.jsp" target="_self" > logout</a><br><br> 
 
-<h1>List of contests</h1>
+<h1>List of submissions</h1>
     <div align="center">
         <table border="1" cellpadding="6">
             <tr>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th>Contest Title</th>
+                <th>Submission</th>
                 <th>Requirements</th>
-                <th>Status</th>
-                <th>Reward</th>
-                <th></th>
-                <th></th>
             </tr>
-            <c:forEach var="contests" items="${listContest}">
+            <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
                     <td><c:out value="${contests.getTitle()}" /></td>
-                    <td><c:out value="${contests.getStartDate()}" /></td>
+                    <td><c:out value="${contests.getSubmission()}" /></td>
                     <td><c:out value="${contests.getEndDate()}" /></td>
-                    <td><c:out value="${contests.getRequirements()}" /></td>
-                    <td><c:out value="${contests.getStatus()}" /></td>
-                    <td><c:out value="${contests.getFee()}" /></td>
-                    <td><c:if test="${contests.getStatus()=='opened'}"><input type = "file"/></c:if></td>
-                    <td><c:if test="${contests.getStatus()=='opened'}"><input type = "submit" value = "Submit!"/></c:if></td>
             </c:forEach>
         </table>
 	</div>
