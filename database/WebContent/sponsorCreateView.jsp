@@ -14,7 +14,7 @@
 		<h1>Create Contest</h1>
 		<p> ${errorOne } </p>
 		<p> ${errorTwo } </p>
-		<form action="register">
+		<form action="sponsor" enctype="multipart/form-data">
 			<table border="1" cellpadding="5">
 				<tr>
 					<th>Wallet Address: </th>
@@ -64,16 +64,19 @@
 						</td>
 					</c:forEach>
 				</tr> --%>
+				
 			</table>
 			<h3>Select 5-10 Judges:</h3>
-			<c:forEach var="j" items="${listJudge}">
+			<select name="judges" multiple>
+				<c:forEach var="j" items="${listJudge}">
+					<option value="${j.getWallet()}">${j.getWallet()}</option>
+				</c:forEach>
+			</select> 
+			<%-- <c:forEach var="j" items="${listJudge}">
 				<input type="checkbox" id="${j.getWallet()}" name="judges" value="${j.getWallet()}" onfocus="this.value=''">
 				<label for="${j.getWallet()}">${j.getWallet()}</label><br>
-			</c:forEach>
+			</c:forEach> --%>
 			<input type="submit" value="Create Contest"/>
 		</form>
-		<br><br>
-		<a href="sponsorView.jsp" target="_self" >Back to Actions</a><br><br>
-		
 	</div>
 </body>
