@@ -25,7 +25,7 @@
             <c:forEach var="c" items="${listClosedContest}">
                 <tr style="text-align:center">
                     <td><c:out value="${c.getTitle()}" /></td>
-                    <td><c:out value="${c.getSubmission()}" /></td>
+                    <td><c:out value="${c.getStatus()}" /></td>
                     <td><c:out value="${c.getFee()}" /></td>
                     <td><input type="submit" value="Distribute!"></td>
             </c:forEach>

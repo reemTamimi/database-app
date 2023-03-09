@@ -177,7 +177,7 @@ public class userDAO
     
     public List<contest> listClosedContests(String activeSponsor) throws SQLException {
         List<contest> listClosedContest = new ArrayList<contest>();        
-        String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeSponsor + "')";
+        String sql = "SELECT * FROM contest WHERE walletAddress IN (SELECT contestWallet FROM contestSponsor where sponsorWallet like '" + activeSponsor + "') AND contestStatus LIKE 'closed'";
         connect_func();
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);

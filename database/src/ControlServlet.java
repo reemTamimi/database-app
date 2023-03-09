@@ -103,17 +103,17 @@ public class ControlServlet extends HttpServlet {
 	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
 	    }
 	    
-	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
-	    	System.out.println("sponsor view");
-			request.setAttribute("listJudge", userDAO.listAllJudges());
-	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
-	    }
-	    
 //	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 //	    	System.out.println("sponsor view");
-//			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
-//	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+//			request.setAttribute("listJudge", userDAO.listAllJudges());
+//	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
 //	    }
+	    
+	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor view");
+			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+	    }
 	    
 //	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 //	    	//System.out.println("sponsor view");
