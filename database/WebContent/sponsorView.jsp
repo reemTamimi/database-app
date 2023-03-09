@@ -51,25 +51,22 @@
 						<input type="file" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
 					</td>
 				</tr>
-			<!-- 	<tr>
-					<th>Sponsors: </th>
-					<c:forEach var="users" items="${listUser}">
-						<td><c:out value="${users.getWallet()}" />
-							<input type="checkbox" id="${users.getWallet()}" name="sponsors" value="${users.getWallet()}" onfocus="this.value=''">
-							<label for="${users.getWallet()}">${users.getWallet()}</label><br>
+<%-- 			 	<tr>
+					<th>Judges: </th>
+					<c:forEach var="j" items="${listJudges}">
+					<tr style="text-align:center">
+						<td><c:out value="${j.getWallet()}" /> <br>
+						
+							<input type="checkbox" id="${judges.getWallet()}" name="sponsors" value="${users.getWallet()}" onfocus="this.value=''">
+							<label for="${judges.getWallet()}">${judges.getWallet()}</label><br>
 						</td>
 					</c:forEach>
-					 	<input type="checkbox" name="sponsors" value="1" onfocus="this.value=''">
-						<br>
-						<input type="checkbox" name="sponsors" value="2" onfocus="this.value=''">
-					</td>
-				</tr> -->
+				</tr> --%>
 			</table>
-			<h3>Sponsors:</h3>
-			<p>test1</p>
-			<c:forEach var="users" items="${listUser}">
-				<p>${users.getWallet()}</p>
-				<c:out value="${users.getWallet()}" />
+			<h3>Select 5-10 Judges:</h3>
+			<c:forEach var="j" items="${listJudge}">
+				<input type="checkbox" id="${j.getWallet()}" name="judges" value="${j.getWallet()}" onfocus="this.value=''">
+				<label for="${j.getWallet()}">${j.getWallet()}</label><br>
 			</c:forEach>
 			<input type="submit" value="Create Contest"/>
 		</form>

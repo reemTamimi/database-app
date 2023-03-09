@@ -120,7 +120,7 @@ public class userDAO
     
     public List<submission> listSubmissions(String activeJudge) throws SQLException {
         List<submission> listSubmission = new ArrayList<submission>();        
-        String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT * FROM contestjudge where judgeWallet like '" + activeJudge + "')";
+        String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -128,8 +128,9 @@ public class userDAO
         while (resultSet.next()) {
             String contestantWallet = resultSet.getString("contestantWallet");
             String contestWallet = resultSet.getString("contestWallet");
+            String submissionFile = resultSet.getString("submissionFile");
             
-            submission submissions = new submission(contestantWallet,contestWallet);
+            submission submissions = new submission(contestantWallet,contestWallet,submissionFile);
             listSubmission.add(submissions);
         }        
         resultSet.close();
@@ -331,7 +332,7 @@ public class userDAO
         						"endDate date not null," +
         						"contestStatus varchar(20) not null," +
         						"sponsorFee double not null," +
-        						"requirements varchar(1000) not null," +
+        						"requirements varchar(100) not null," +
         						"check (regexp_like (walletAddress, '^(0x[A-F[:digit:]]{40}|root)$'))," +
         						"check (contestStatus in ('created','opened','closed','past'))," +
         						"check (sponsorFee >= 0)," +
@@ -364,6 +365,7 @@ public class userDAO
         						("create table submission (" +
         							"contestantWallet varchar(42) not null," +
         							"contestWallet varchar(42) not null," +
+        							"submissionFile varchar(100) not null," + 
         							"primary key (contestantWallet, contestWallet)," +
         							"foreign key (contestantWallet) references contestant (walletAddress)," +
         							"foreign key (contestWallet) references contest (walletAddress));")
@@ -499,18 +501,18 @@ public class userDAO
         			"('0x00000000000000000000000000000000000000AD', 0);")
         		};
 
-        	String[] IN_SUBMISSION = {("insert into submission(contestantWallet, contestWallet)" +
-        		"values ('0x000000000000000000000000000000000000001A','0x000000000000000000000000000000000000002B')," +
-        			"('0x000000000000000000000000000000000000002A','0x000000000000000000000000000000000000002B')," +
-        			"('0x000000000000000000000000000000000000003A','0x000000000000000000000000000000000000002B')," +
-        			"('0x000000000000000000000000000000000000004A','0x000000000000000000000000000000000000002B')," +
-        			"('0x000000000000000000000000000000000000005A','0x000000000000000000000000000000000000002B')," +
-        			"('0x000000000000000000000000000000000000006A','0x000000000000000000000000000000000000003B')," +
-        			"('0x000000000000000000000000000000000000007A','0x000000000000000000000000000000000000003B')," +
-        			"('0x000000000000000000000000000000000000008A','0x000000000000000000000000000000000000003B')," +
-        			"('0x000000000000000000000000000000000000009A','0x000000000000000000000000000000000000003B')," +
-        			"('0x00000000000000000000000000000000000000AA','0x000000000000000000000000000000000000003B')," +
-        			"('0x000000000000000000000000000000000000001A','0x000000000000000000000000000000000000003B');")
+        	String[] IN_SUBMISSION = {("insert into submission(contestantWallet, contestWallet, submissionFile)" +
+        		"values ('0x000000000000000000000000000000000000001A','0x000000000000000000000000000000000000002B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000002A','0x000000000000000000000000000000000000002B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000003A','0x000000000000000000000000000000000000002B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000004A','0x000000000000000000000000000000000000002B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000005A','0x000000000000000000000000000000000000002B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000006A','0x000000000000000000000000000000000000003B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000007A','0x000000000000000000000000000000000000003B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000008A','0x000000000000000000000000000000000000003B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000009A','0x000000000000000000000000000000000000003B','tst.txt')," +
+        			"('0x00000000000000000000000000000000000000AA','0x000000000000000000000000000000000000003B','tst.txt')," +
+        			"('0x000000000000000000000000000000000000001A','0x000000000000000000000000000000000000003B','tst.txt');")
         		};
 
         	String[] IN_USERS = {("insert into users (walletAddress,pass,userRole)" +
