@@ -53,17 +53,6 @@
 						<input type="file" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
 					</td>
 				</tr>
-<%-- 			 	<tr>
-					<th>Judges: </th>
-					<c:forEach var="j" items="${listJudges}">
-					<tr style="text-align:center">
-						<td><c:out value="${j.getWallet()}" /> <br>
-						
-							<input type="checkbox" id="${judges.getWallet()}" name="sponsors" value="${users.getWallet()}" onfocus="this.value=''">
-							<label for="${judges.getWallet()}">${judges.getWallet()}</label><br>
-						</td>
-					</c:forEach>
-				</tr> --%>
 			</table>
 			<h3>Select 5-10 Judges:</h3>
 			<c:forEach var="j" items="${listJudge}">
