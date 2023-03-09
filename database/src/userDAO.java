@@ -121,7 +121,7 @@ public class userDAO
     public List<submission> listSubmissions(String activeJudge) throws SQLException {
         List<submission> listSubmission = new ArrayList<submission>();        
         //String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
-        String sql = "SELECT s.contestantWallet, s.contestWallet, c.title, c.requirements FROM submission s INNER JOIN contest c ON s.contestWallet =  c.walletAddress WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
+        String sql = "SELECT s.contestantWallet, s.contestWallet, s.submissionFile, c.title, c.requirements FROM submission s INNER JOIN contest c ON s.contestWallet =  c.walletAddress WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -131,7 +131,10 @@ public class userDAO
             String contestWallet = resultSet.getString("contestWallet");
             String submissionFile = resultSet.getString("submissionFile");
             
-            submission submissions = new submission(contestantWallet,contestWallet,submissionFile);
+            String title = resultSet.getString("title");
+            String requirements = resultSet.getString("requirements");
+            
+            submission submissions = new submission(contestantWallet,contestWallet,submissionFile,title,requirements);
             listSubmission.add(submissions);
         }        
         resultSet.close();

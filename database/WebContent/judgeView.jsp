@@ -23,9 +23,9 @@
             </tr>
             <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
-                    <td><c:out value="${contests.getTitle()}" /></td>
-                    <td><c:out value="${contests.getSubmission()}" /></td>
-                    <td><c:out value="${contests.getEndDate()}" /></td>
+                    <td><c:out value="${submissions.getTitle()}" /></td>
+                    <td><c:out value="${submissions.getSubmission()}" /></td>
+                    <td><c:out value="${submissions.getRequirements()}" /></td>
             </c:forEach>
         </table>
 	</div>
