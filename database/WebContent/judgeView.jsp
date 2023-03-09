@@ -20,12 +20,15 @@
                 <th>Contest Title</th>
                 <th>Submission</th>
                 <th>Requirements</th>
+                <th>Grade [0-100]
             </tr>
             <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
                     <td><c:out value="${submissions.getTitle()}" /></td>
                     <td><c:out value="${submissions.getSubmission()}" /></td>
                     <td><c:out value="${submissions.getRequirements()}" /></td>
+                    <td><input type="number" name="grade" value="0-100" onfocus="this.value''"></td>
+                    <td><input type="submit" value="Submit!"></td>
             </c:forEach>
         </table>
 	</div>
