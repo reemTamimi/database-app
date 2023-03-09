@@ -12,7 +12,7 @@
 
 <div align="center">
 	
-	<form action = "contestant_search_button">
+	<form action = "contestant">
 		<input type="text" name="pattern" value=""/>
 		<input type="submit" value="Search!"/>
 	</form>
@@ -36,7 +36,7 @@
                     <td><c:out value="${contests.getTitle()}" /></td>
                     <td><c:out value="${contests.getStartDate()}" /></td>
                     <td><c:out value="${contests.getEndDate()}" /></td>
-                    <td><c:out value="${contests.getRequirements()}" /></td>
+                    <td><a href="resources/${contests.getRequirements()}" target="_blank">requirements</a></td>
                     <td><c:out value="${contests.getStatus()}" /></td>
                     <td><c:out value="${contests.getFee()}" /></td>
                     <td><c:if test="${contests.getStatus()=='opened'}"><input type = "file"/></c:if></td>
