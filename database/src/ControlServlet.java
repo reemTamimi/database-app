@@ -61,7 +61,10 @@ public class ControlServlet extends HttpServlet {
         	case "/root":
         		rootPage(request,response);
         		break;
-        	case "/contestant_search_button":
+        	case "/sponsor":
+        		sponsorPage(request,response);
+        		break;
+        	case "/contestant":
         		contestantPage(request,response,request.getParameter("pattern"));
         		break;
         	case "/logout":
@@ -69,7 +72,7 @@ public class ControlServlet extends HttpServlet {
         		break;
         	 case "/list": 
                  System.out.println("The action is: list");
-                 listUser(request, response);           	
+                 listUser(request, response);
                  break;
 	    	}
 	    }
@@ -103,25 +106,42 @@ public class ControlServlet extends HttpServlet {
 	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
 	    }
 	    
-//	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
-//	    	System.out.println("sponsor view");
-//			request.setAttribute("listJudge", userDAO.listAllJudges());
-//	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
-//	    }
-	    
 	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("sponsor view");
-			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
-	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+	    	
+	    	String contestWallet = request.getParameter("walletAddress");
+	    	String contestTitle = request.getParameter("title");
+	    	String contestStart = request.getParameter("startDate");
+	    	String contestEnd = request.getParameter("endDate");
+	    	String sponsorFee = request.getParameter("sponsorFee");
+	    	String contestReq = request.getParameter("requirements");
+	    	String judgeList = request.getParameter("judges");
+	    	
+	    	System.out.println("sponsor params passed...");
+	    	System.out.println(judgeList);
+	    	
+	    	Boolean b = contestWallet != null &
+	    		contestTitle != null &
+	    		contestStart != null &
+	    		contestEnd != null &
+	    		sponsorFee != null &
+	    		contestReq != null &
+	    		judgeList != null;
+	    	
+	    	if (b) {
+		    	contest newContest = new contest(contestWallet,contestTitle);
+		    	newContest.setStartDate(contestStart);
+		    	newContest.setEndDate(contestEnd);
+		    	newContest.setFee(Double.valueOf(sponsorFee.replace("$","")));
+		    	newContest.setStatus("opened");
+		    	newContest.setRequirements(contestReq);
+		    	
+		    	userDAO.insertContest(newContest);
+	    	}
+	    	
+			request.setAttribute("listJudge", userDAO.listAllJudges());
+	    	request.getRequestDispatcher("sponsorView.jsp").forward(request, response);
 	    }
-	    
-//	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
-//	    	//System.out.println("sponsor view");
-//			//request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
-//	    	System.out.println("sponsor view");
-//			request.setAttribute("listJudge", userDAO.listAllJudges());
-//	    	request.getRequestDispatcher("sponsorView1.jsp").forward(request, response);
-//	    }
 	    
 	    private void judgePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("judge view");
@@ -160,34 +180,6 @@ public class ControlServlet extends HttpServlet {
 					default:
 						System.out.println("Login unsuccessful! Role is invalid...");
 				} 
-	    	 
-	    	 
-//			if (walletAddress.equals("root") && pass.equals("pass1234")) {
-//				System.out.println("Login Successful! Redirecting to root");
-//				session = request.getSession();
-//				session.setAttribute("username", walletAddress);
-//				rootPage(request, response, "");
-//			} else if(userDAO.isValid(walletAddress, pass)) {
-//	 			currentUser = walletAddress;
-//	 			System.out.println("Login Successful! Redirecting");
-////	 			request.getRequestDispatcher(targPage).forward(request, response);
-//		    	String userRole = userDAO.getUser(walletAddress).getRole();
-//				switch(userRole) {
-//					case "sponsor":
-//						targPage = "sponsorView.jsp";
-//						break;
-//					case "contestant":
-//						session = request.getSession();
-//						session.setAttribute("username", walletAddress);
-//						contestantPage(request, response, "");
-//						targPage = "contestantView.jsp";
-//						break;
-//					case "judge":
-//						targPage = "judgeView.jsp";
-//						break;
-//					default:
-//						System.out.println("Login unsuccessful! User is invalid...");
-//				} 
 			} else {
    	    		request.setAttribute("loginStr","Login Failed: Please check your credentials.");
 	    		request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -219,10 +211,11 @@ public class ControlServlet extends HttpServlet {
 	   		 request.getRequestDispatcher("register.jsp").forward(request, response);
 	   	 	}
 	    }    
+	    
 	    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    	currentUser = "";
         		response.sendRedirect("login.jsp");
-        	}
+        }
 	
 	    
 
