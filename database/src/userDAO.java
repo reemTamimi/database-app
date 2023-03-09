@@ -175,36 +175,6 @@ public class userDAO
         return listContest;
     }
     
-    public List<contest> listClosedContests(String activeSponsor) throws SQLException {
-        List<contest> listClosedContest = new ArrayList<contest>();        
-        String sql = "SELECT * FROM contest WHERE walletAddress IN (SELECT contestWallet FROM contestSponsor where sponsorWallet like '" + activeSponsor + "') AND contestStatus LIKE 'closed'";
-        connect_func();
-        statement = (Statement) connect.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-         
-        while (resultSet.next()) {
-            String walletAddress = resultSet.getString("walletAddress");
-            String title = resultSet.getString("title");
-   		 	String startDate = resultSet.getString("startDate");
-   		 	String endDate = resultSet.getString("endDate");
-   		 	String contestStatus = resultSet.getString("contestStatus");
-   		 	double sponsorFee = resultSet.getDouble("sponsorFee");
-   		 	String requirements = resultSet.getString("requirements");
-            
-            contest contests = new contest(walletAddress,title);
-            contests.setStartDate(startDate);
-            contests.setEndDate(endDate);
-            contests.setStatus(contestStatus);
-            contests.setFee(sponsorFee);
-            contests.setRequirements(requirements);
-            
-            listClosedContest.add(contests);
-        }        
-        resultSet.close();
-        disconnect();        
-        return listClosedContest;
-    }
-    
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
@@ -218,6 +188,24 @@ public class userDAO
 			preparedStatement.setString(1, users.getWallet());
 			preparedStatement.setString(2, users.getPass());
 			preparedStatement.setString(3, users.getRole());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
+    public void insertContest(contest newContest) throws SQLException {
+//    	connect_func("root","pass1234"); 
+    	connect_func(); 
+		String sql = "insert into contest(walletAddress,title,startDate,endDate,contestStatus," + 
+				"sponsorFee,requirements) values (?, ?, ?, ?, ?, ?, ?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newContest.getWallet());
+			preparedStatement.setString(2, newContest.getTitle());
+			preparedStatement.setString(3, newContest.getStartDate());	
+			preparedStatement.setString(4, newContest.getEndDate());	
+			preparedStatement.setString(5, newContest.getStatus());	
+			preparedStatement.setDouble(6, newContest.getFee());	
+			preparedStatement.setString(7, newContest.getRequirements());	
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -313,8 +301,7 @@ public class userDAO
     
     
     
-    public boolean isValid(String walletAddress, String pass) throws SQLException
-    {
+    public boolean isValid(String walletAddress, String pass) throws SQLException {
     	String sql = "SELECT * FROM users";
     	connect_func();
     	statement = (Statement) connect.createStatement();
