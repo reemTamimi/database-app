@@ -175,6 +175,36 @@ public class userDAO
         return listContest;
     }
     
+    public List<contest> listClosedContests(String activeSponsor) throws SQLException {
+        List<contest> listClosedContest = new ArrayList<contest>();        
+        String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeSponsor + "')";
+        connect_func();
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            String title = resultSet.getString("title");
+   		 	String startDate = resultSet.getString("startDate");
+   		 	String endDate = resultSet.getString("endDate");
+   		 	String contestStatus = resultSet.getString("contestStatus");
+   		 	double sponsorFee = resultSet.getDouble("sponsorFee");
+   		 	String requirements = resultSet.getString("requirements");
+            
+            contest contests = new contest(walletAddress,title);
+            contests.setStartDate(startDate);
+            contests.setEndDate(endDate);
+            contests.setStatus(contestStatus);
+            contests.setFee(sponsorFee);
+            contests.setRequirements(requirements);
+            
+            listClosedContest.add(contests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listClosedContest;
+    }
+    
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();

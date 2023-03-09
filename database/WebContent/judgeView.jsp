@@ -20,7 +20,7 @@
                 <th>Contest Title</th>
                 <th>Submission</th>
                 <th>Requirements</th>
-                <th>Grade [0-100]
+                <th>Grade [0-100]</th>
             </tr>
             <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
