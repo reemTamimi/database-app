@@ -9,6 +9,8 @@
 </head>
 <body>
 	<div align="center">
+	
+	<a href="login.jsp" target="_self" > logout</a><br><br> 
 		<h1>Create Contest</h1>
 		<p> ${errorOne } </p>
 		<p> ${errorTwo } </p>
