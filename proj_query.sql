@@ -57,6 +57,7 @@ create table judge (
 create table submission (
 	contestantWallet varchar(42) not null,
     contestWallet varchar(42) not null,
+    submissionFile varchar(100) not null,
 	primary key (contestantWallet, contestWallet),
     foreign key (contestantWallet) references contestant (walletAddress),
     foreign key (contestWallet) references contest (walletAddress));
