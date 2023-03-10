@@ -12,7 +12,7 @@
 
 <div align="center">
 	
-	<form action = "contestant_search_button">
+	<form action = "contestant">
 		<input type="text" name="pattern" value=""/>
 		<input type="submit" value="Search!"/>
 	</form>
