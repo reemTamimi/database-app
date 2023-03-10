@@ -16,8 +16,8 @@
     <div align="center">
         <table border="1" cellpadding="6">
             <tr>
-                <th><a href="sponsorCreateView.jsp" target="_self">Create Contest</th>
-                <th><a href="sponsorDistributeView.jsp" target="_self">Distribute Rewards</th>
+                <th><a href="sponsorCreateView.jsp" target="_self">Create Contest</a></th>
+                <th><a href="sponsorDistributeView.jsp" target="_self">Distribute Rewards</a></th>
             </tr>
         </table>
 	</div>
