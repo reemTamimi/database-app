@@ -71,6 +71,16 @@ public class ControlServlet extends HttpServlet {
                  System.out.println("The action is: list");
                  listUser(request, response);           	
                  break;
+//        	 case "/sponsorCreatePage":
+//        		 sponsorCreatePage(request,response);
+//        		 break;
+//        	 case "/sponsorDistributePage":
+//        		 sponsorDistributePage(request,response);
+//        		 break;
+        	 case "/sponsor":
+        		 sponsorPage(request,response);
+        		 break;
+        		
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -111,8 +121,22 @@ public class ControlServlet extends HttpServlet {
 	    
 	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("sponsor view");
-			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	//System.out.println(request.getServletPath());
+			//request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	request.getRequestDispatcher("sponsorView.jsp").forward(request, response);
+	    }
+	    private void sponsorDistributePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor view");
+	    	request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	System.out.println(request.getPathInfo());
+	    	//request.setAttribute("listJudge", userDAO.listAllJudges());
 	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+	    }
+	    private void sponsorCreatePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor view");
+			//request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+			request.setAttribute("listJudge", userDAO.listAllJudges());
+	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
 	    }
 	    
 //	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
@@ -149,7 +173,8 @@ public class ControlServlet extends HttpServlet {
 						rootPage(request, response);
 						break;
 					case "sponsor":
-						sponsorPage(request, response);
+						//sponsorPage(request, response);
+						sponsorDistributePage(request,response);
 						break;
 					case "contestant":
 						contestantPage(request, response, "");
