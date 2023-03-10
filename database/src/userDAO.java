@@ -223,6 +223,23 @@ public class userDAO
         preparedStatement.close();
     }
     
+    public void insertContest(contest newContest) throws SQLException {
+    	connect_func(); 
+		String sql = "insert into contest(walletAddress,title,startDate,endDate,contestStatus," + 
+				"sponsorFee,requirements) values (?, ?, ?, ?, ?, ?, ?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newContest.getWallet());
+			preparedStatement.setString(2, newContest.getTitle());
+			preparedStatement.setString(3, newContest.getStartDate());	
+			preparedStatement.setString(4, newContest.getEndDate());	
+			preparedStatement.setString(5, newContest.getStatus());	
+			preparedStatement.setDouble(6, newContest.getFee());	
+			preparedStatement.setString(7, newContest.getRequirements());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
     public boolean delete(String walletAddress) throws SQLException {
         String sql = "DELETE FROM users WHERE walletAddress = ?";        
         connect_func();
