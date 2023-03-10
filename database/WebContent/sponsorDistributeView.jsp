@@ -32,8 +32,10 @@
         </table>
 	</div>
 	<br><br>
-	<a href="sponsorView.jsp" target="_self" >Back to Actions</a><br><br>
-	
+	<!-- <a href="sponsorView.jsp" target="_self" >Back to Actions</a><br><br> -->
+	<form action="sponsor_create">
+		<input type="submit" value="Create Contest"/>
+	</form>
 	</div>
 
 </body>
