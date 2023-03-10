@@ -14,7 +14,7 @@
 		<h1>Create Contest</h1>
 		<p> ${errorOne } </p>
 		<p> ${errorTwo } </p>
-		<form action="register">
+		<form action="sponsor_create">
 			<table border="1" cellpadding="5">
 				<tr>
 					<th>Wallet Address: </th>
@@ -53,27 +53,20 @@
 						<input type="file" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
 					</td>
 				</tr>
-<%-- 			 	<tr>
-					<th>Judges: </th>
-					<c:forEach var="j" items="${listJudges}">
-					<tr style="text-align:center">
-						<td><c:out value="${j.getWallet()}" /> <br>
-						
-							<input type="checkbox" id="${judges.getWallet()}" name="sponsors" value="${users.getWallet()}" onfocus="this.value=''">
-							<label for="${judges.getWallet()}">${judges.getWallet()}</label><br>
-						</td>
-					</c:forEach>
-				</tr> --%>
 			</table>
 			<h3>Select 5-10 Judges:</h3>
-			<c:forEach var="j" items="${listJudge}">
-				<input type="checkbox" id="${j.getWallet()}" name="judges" value="${j.getWallet()}" onfocus="this.value=''">
-				<label for="${j.getWallet()}">${j.getWallet()}</label><br>
-			</c:forEach>
+			<select name="judges" multiple>
+				<c:forEach var="j" items="${listJudge}">
+					<option value="${j.getWallet()}">${j.getWallet()}</option>
+				</c:forEach>
+			</select> 
 			<input type="submit" value="Create Contest"/>
 		</form>
 		<br><br>
-		<a href="sponsorView.jsp" target="_self" >Back to Actions</a><br><br>
-		
+		<!-- <a href="sponsorView.jsp" target="_self" >Back to Actions</a><br><br> -->
+		<form action="sponsor_distribute">
+			<input type="submit" value="View Closed Contests"/>
+		</form>
+	<!-- <a href="sponsorDistributeView.jsp" target="_self" >View Closed Contests</a><br><br> -->		
 	</div>
 </body>
