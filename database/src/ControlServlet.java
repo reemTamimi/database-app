@@ -56,10 +56,22 @@ public class ControlServlet extends HttpServlet {
         	case "/initialize":
         		userDAO.init();
         		System.out.println("Database successfully initialized!");
-        		rootPage(request,response,"");
+        		rootPage(request,response);
         		break;
         	case "/root":
-        		rootPage(request,response, "");
+        		rootPage(request,response);
+        		break;
+        	case "/contestant":
+        		contestantPage(request,response,request.getParameter("pattern"));
+        		break;
+//        	case "/sponsor":
+//        		sponsorPage(request,response);
+//        		break;
+        	case "/sponsor_create":
+        		sponsorCreate(request,response);
+        		break;
+        	case "/sponsor_distribute":
+        		sponsorDistribute(request,response);
         		break;
         	case "/logout":
         		logout(request,response);
@@ -88,36 +100,125 @@ public class ControlServlet extends HttpServlet {
 	        System.out.println("listPeople finished: 111111111111111111111111111111111111");
 	    }
 	    	        
-	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
+	    private void rootPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
+	    private void contestantPage(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
+	    	System.out.println("contestant view");
+			request.setAttribute("listContest", userDAO.listContests(pattern));
+	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
+	    }
+	    
+//	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+//	    	System.out.println("sponsor view");
+//			request.setAttribute("listJudge", userDAO.listAllJudges());
+//	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
+//	    }
+	    
+//	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+//	    	System.out.println("sponsor view");
+//			//request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+//	    	request.getRequestDispatcher("sponsorView.jsp").forward(request, response);
+//	    }
+	    
+	    private void sponsorCreate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor create");
+	    	
+	    	String contestWallet = request.getParameter("walletAddress");
+	    	String contestTitle = request.getParameter("title");
+	    	String contestStart = request.getParameter("startDate");
+	    	String contestEnd = request.getParameter("endDate");
+	    	String sponsorFee = request.getParameter("sponsorFee");
+	    	String contestReq = request.getParameter("requirements");
+	    	String judgeList = request.getParameter("judges");
+	    	
+//	    	System.out.println("sponsor params passed...");
+//	    	System.out.println(judgeList);
+	    	
+	    	Boolean b = contestWallet != null &
+	    		contestTitle != null &
+	    		contestStart != null &
+	    		contestEnd != null &
+	    		sponsorFee != null &
+	    		contestReq != null &
+	    		judgeList != null;
+	    	
+	    	if (b) {
+		    	contest newContest = new contest(contestWallet,contestTitle);
+		    	newContest.setStartDate(contestStart);
+		    	newContest.setEndDate(contestEnd);
+		    	newContest.setFee(Double.valueOf(sponsorFee.replace("$","")));
+		    	newContest.setStatus("opened");
+		    	newContest.setRequirements(contestReq);
+		    	
+		    	userDAO.insertContest(newContest);
+	    	}
+	    	
+			request.setAttribute("listJudge", userDAO.listAllJudges());
+	    	request.getRequestDispatcher("sponsorCreateView.jsp").forward(request, response);
+	    }
+	    
+	    private void sponsorDistribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor distribute");
+	    	
+			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+	    }
+	    
+	    
+	    
+//	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+//	    	//System.out.println("sponsor view");
+//			//request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+//	    	System.out.println("sponsor view");
+//			request.setAttribute("listJudge", userDAO.listAllJudges());
+//	    	request.getRequestDispatcher("sponsorView1.jsp").forward(request, response);
+//	    }
+	    
+	    private void judgePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("judge view");
+			request.setAttribute("listSubmission", userDAO.listSubmissions(currentUser));
+	    	request.getRequestDispatcher("judgeView.jsp").forward(request, response);
+	    }
+	    
 	    
 	    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	    	 //String email = request.getParameter("email");
+   	 		
 	    	 String walletAddress = request.getParameter("walletAddress");
 	    	 String pass = request.getParameter("pass");
+	    	 String targPage = "";
+	    	
 	    	 
-	    	 if (walletAddress.equals("root") && pass.equals("pass1234")) {
-				 System.out.println("Login Successful! Redirecting to root");
-				 session = request.getSession();
-				 session.setAttribute("username", walletAddress);
-				 rootPage(request, response, "");
-	    	 }
-	    	 else if(userDAO.isValid(walletAddress, pass)) 
-	    	 {
-			 	 
-			 	 currentUser = walletAddress;
-				 System.out.println("Login Successful! Redirecting");
-				 request.getRequestDispatcher("activitypage.jsp").forward(request, response);
-			 			 			 			 
-	    	 }
-	    	 else {
-	    		 request.setAttribute("loginStr","Login Failed: Please check your credentials.");
-	    		 request.getRequestDispatcher("login.jsp").forward(request, response);
-	    	 }
+	    	 if (userDAO.isValid(walletAddress, pass)) {
+		 		currentUser = walletAddress;
+		 		System.out.println("Login Successful! Redirecting");
+				session = request.getSession();
+				session.setAttribute("username", walletAddress);
+				
+				String userRole = userDAO.getUser(walletAddress).getRole();
+				switch(userRole) {
+					case "root":
+						rootPage(request, response);
+						break;
+					case "sponsor":
+						sponsorCreate(request, response);
+						break;
+					case "contestant":
+						contestantPage(request, response, "");
+						break;
+					case "judge":
+						judgePage(request, response);
+						break;
+					default:
+						System.out.println("Login unsuccessful! Role is invalid...");
+				} 
+			} else {
+   	    		request.setAttribute("loginStr","Login Failed: Please check your credentials.");
+	    		request.getRequestDispatcher("login.jsp").forward(request, response);
+			}
 	    }
 	           
 	    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
@@ -125,22 +226,10 @@ public class ControlServlet extends HttpServlet {
 	    	String pass = request.getParameter("password");
 	    	String userRole = request.getParameter("userRole");
 	    	String confirm = request.getParameter("confirmation");
-	    	/*String email = request.getParameter("email");
-	   	 	String firstName = request.getParameter("firstName");
-	   	 	String lastName = request.getParameter("lastName");
-	   	 	String password = request.getParameter("password");
-	   	 	String birthday = request.getParameter("birthday");
-	   	 	String adress_street_num = request.getParameter("adress_street_num"); 
-	   	 	String adress_street = request.getParameter("adress_street"); 
-	   	 	String adress_city = request.getParameter("adress_city"); 
-	   	 	String adress_state = request.getParameter("adress_state"); 
-	   	 	String adress_zip_code = request.getParameter("adress_zip_code"); 	   	 	
-	   	 	String confirm = request.getParameter("confirmation");*/
 	   	 	
 	   	 	if (pass.equals(confirm)) {
 	   	 		if (!userDAO.checkWallet(walletAddress)) {
 		   	 		System.out.println("Registration Successful! Added to database");
-		            //user users = new user(email,firstName, lastName, password, birthday, adress_street_num,  adress_street,  adress_city,  adress_state,  adress_zip_code, 1000,0);
 		   	 		user users = new user(walletAddress,pass,userRole);
 		   	 		userDAO.insert(users);
 		   	 		response.sendRedirect("login.jsp");

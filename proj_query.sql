@@ -1,5 +1,16 @@
-create database projdb;
+create database if not exists projdb;
 use projdb;
+
+drop table if exists contestSponsor;
+drop table if exists contestJudge;
+drop table if exists submissionGrade;
+drop table if exists review;
+drop table if exists users;
+drop table if exists submission;
+drop table if exists judge;
+drop table if exists sponsor;
+drop table if exists contest;
+drop table if exists contestant;
 
 ############
 # ENTITIES #
@@ -46,6 +57,7 @@ create table judge (
 create table submission (
 	contestantWallet varchar(42) not null,
     contestWallet varchar(42) not null,
+    submissionFile varchar(100) not null,
 	primary key (contestantWallet, contestWallet),
     foreign key (contestantWallet) references contestant (walletAddress),
     foreign key (contestWallet) references contest (walletAddress));
@@ -101,13 +113,13 @@ create table contestSponsor (
 #######################
 # TRIGGER CONSTRAINTS #
 #######################
-delimiter $$
-create trigger numJudges before insert on contestJudge
-	for each row
-    begin
-		if (select count(judgeWallet) from contestJudge where contestWallet = new.contestWallet) >= 10
-        then set new.contestWallet = null;
-        end if;
-	end$$
-delimiter ;
+#delimiter $$
+#create trigger numJudges before insert on contestJudge
+#	for each row
+#    begin
+#		if (select count(judgeWallet) from contestJudge where contestWallet = new.contestWallet) >= 10
+#        then set new.contestWallet = null;
+#        end if;
+#	end$$
+#delimiter ;
     
