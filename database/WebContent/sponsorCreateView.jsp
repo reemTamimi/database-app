@@ -50,7 +50,8 @@
 				<tr>
 					<th>Requirements: </th>
 					<td align="center" colspan="3">
-						<input type="file" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
+						<input type="text" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
+						<!-- <textarea name="requirements" rows="4" cols="50"></textarea> -->
 					</td>
 				</tr>
 			</table>
