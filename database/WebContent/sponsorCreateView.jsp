@@ -68,6 +68,6 @@
 		<form action="sponsor_distribute">
 			<input type="submit" value="View Closed Contests"/>
 		</form>
-	<!-- <a href="sponsorDistributeView.jsp" target="_self" >View Closed Contests</a><br><br> -->		
+	<!-- <a href="sponsorDistributeView.jsp" target="_self" >View Closed Contests</a><br><br> comment-->		
 	</div>
 </body>
