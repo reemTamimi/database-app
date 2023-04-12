@@ -26,8 +26,8 @@
             </tr>
             <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
-                	<td style="display:none;"><c:out value="${submissions.getContestant()}" /></td>
-                	<td style="display:none;"><c:out value="${submissions.getContest()}" /></td>
+                	<td style="display:none;"><c:out value="${submissions.getContestant()}" /><input type="text" name="contestantWallet"></td>
+                	<td style="display:none;"><c:out value="${submissions.getContest()}" /><input type="text" name="contestWallet"></td>
                     <td><c:out value="${submissions.getTitle()}" /></td>
 <%--                     <td><a href="resources/${submissions.getSubmission()}" target="_blank">submission</a></td>
                     <td><a href="resources/${submissions.getRequirements()}" target="_blank">requirements</a></td> --%>

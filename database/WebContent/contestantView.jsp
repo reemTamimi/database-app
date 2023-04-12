@@ -34,7 +34,7 @@
             </tr>
             <c:forEach var="contests" items="${listContest}">
                 <tr style="text-align:center">
-                	<td style="display:none;"><c:out value="${contests.getWallet()}" /></td>
+                	<td style="display:none;"><c:out value="${contests.getWallet()}"/><input type="text" name="contestWallet"></td>
                     <td><c:out value="${contests.getTitle()}" /></td>
                     <td><c:out value="${contests.getStartDate()}" /></td>
                     <td><c:out value="${contests.getEndDate()}" /></td>
