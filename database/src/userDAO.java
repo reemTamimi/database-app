@@ -240,30 +240,30 @@ public class userDAO
         preparedStatement.close();
     }
     
-//    public void insertSubmission(contest newSubmission) throws SQLException {
-//    	connect_func(); 
-//		String sql = "insert into submission(contestantWallet,contestWallet,submissionFile) values (?, ?, ?)";
-//		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-//			preparedStatement.setString(1, newSubmission.getContestantWallet());
-//			preparedStatement.setString(2, newSubmission.getContestWallet());
-//			preparedStatement.setString(3, newSubmission.getSubmission());	
-//
-//		preparedStatement.executeUpdate();
-//        preparedStatement.close();
-//    }
-//    
-//    public void insertSubmissionGrade(contest newSubmissionGrade) throws SQLException {
-//    	connect_func(); 
-//		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?,?)";
-//		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-//			preparedStatement.setString(1, newSubmissionGrade.getContestantWallet());
-//			preparedStatement.setString(2, newSubmissionGrade.getContestWallet());
-//			preparedStatement.setString(3, newSubmissionGrade.getJudgeWallet());
-//			preparedStatement.setString(4, newSubmissionGrade.getGrade());
-//
-//		preparedStatement.executeUpdate();
-//        preparedStatement.close();
-//    }
+    public void insertSubmission(submission newSubmission) throws SQLException {
+    	connect_func(); 
+		String sql = "insert into submission(contestantWallet,contestWallet,submissionFile) values (?, ?, ?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newSubmission.getContestant());
+			preparedStatement.setString(2, newSubmission.getContest());
+			preparedStatement.setString(3, newSubmission.getSubmission());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
+    public void insertSubmissionGrade(grade newSubmissionGrade) throws SQLException {
+    	connect_func(); 
+		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?,?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newSubmissionGrade.getContestant());
+			preparedStatement.setString(2, newSubmissionGrade.getContest());
+			preparedStatement.setString(3, newSubmissionGrade.getJudge());
+			preparedStatement.setString(4, newSubmissionGrade.getGrade());
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
     
     public boolean delete(String walletAddress) throws SQLException {
         String sql = "DELETE FROM users WHERE walletAddress = ?";        
