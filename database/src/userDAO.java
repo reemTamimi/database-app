@@ -240,13 +240,13 @@ public class userDAO
         preparedStatement.close();
     }
     
-    public void insertSubmission(submission newSubmission) throws SQLException {
+      public void insertSubmission(String contestantWallet, String contestWallet, String submission) throws SQLException {
     	connect_func(); 
-		String sql = "insert into submission(contestantWallet,contestWallet,submissionFile) values (?, ?, ?)";
+		String sql = "insert into submission(contestantWallet,contestWallet,submission) values (?, ?, ?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-			preparedStatement.setString(1, newSubmission.getContestant());
-			preparedStatement.setString(2, newSubmission.getContest());
-			preparedStatement.setString(3, newSubmission.getSubmission());	
+		preparedStatement.setString(1, contestantWallet);
+		preparedStatement.setString(2, contestWallet);
+		preparedStatement.setString(3, submission);
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
