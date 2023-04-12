@@ -108,6 +108,19 @@ public class ControlServlet extends HttpServlet {
 	    
 	    private void contestantPage(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
 	    	System.out.println("contestant view");
+	    	
+	    	String contestWallet = request.getParameter("walletAddress");
+	    	String submission = request.getParameter("judges");
+	    	String contestantWallet = currentUser;
+	    	
+	    	Boolean b = contestWallet != null &
+	    		contestantWallet != null &
+	    		submission != null;
+	    	
+	    	if (b) {
+		    	userDAO.insertSubmission(contestantWallet, contestWallet, submission);
+	    	}
+	    	
 			request.setAttribute("listContest", userDAO.listContests(pattern));
 	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
 	    }
