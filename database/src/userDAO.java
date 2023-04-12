@@ -233,8 +233,33 @@ public class userDAO
 			preparedStatement.setString(3, newContest.getStartDate());	
 			preparedStatement.setString(4, newContest.getEndDate());	
 			preparedStatement.setString(5, newContest.getStatus());	
-			preparedStatement.setDouble(6, newContest.getFee());	
+			preparedStatement.setDouble(6, newContest.getFee());
 			preparedStatement.setString(7, newContest.getRequirements());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
+    public void insertSubmission(contest newSubmission) throws SQLException {
+    	connect_func(); 
+		String sql = "insert into submission(contestantWallet,contestWallet,submissionFile) values (?, ?, ?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newSubmission.getContestantWallet());
+			preparedStatement.setString(2, newSubmission.getContestWallet());
+			preparedStatement.setString(3, newSubmission.getSubmission());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
+    public void insertSubmissionGrade(contest newSubmissionGrade) throws SQLException {
+    	connect_func(); 
+		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?,?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+			preparedStatement.setString(1, newSubmissionGrade.getContestantWallet());
+			preparedStatement.setString(2, newSubmissionGrade.getContestWallet());
+			preparedStatement.setString(3, newSubmissionGrade.getJudgeWallet());
+			preparedStatement.setString(4, newSubmissionGrade.getGrade());
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
