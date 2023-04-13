@@ -105,6 +105,7 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("listUser", userDAO.listAllUsers());
 			request.setAttribute("bigSponsors", userDAO.bigSponsors());
 			request.setAttribute("topJudges", userDAO.topJudges());
+			request.setAttribute("bestContestants", userDAO.bestContestants());
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
