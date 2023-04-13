@@ -103,6 +103,7 @@ public class ControlServlet extends HttpServlet {
 	    private void rootPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
+			request.setAttribute("bigSponsors", userDAO.bigSponsors());
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
