@@ -121,6 +121,28 @@ public class userDAO
         return bigSponsors;
     }
     
+    public List<user> topJudges() throws SQLException {
+        List<user> bigSponsors = new ArrayList<user>();        
+        String sql = "select a.judgeWallet from "
+        		+ "(select judgeWallet,avg(score) as ascore from review group by judgeWallet order by ascore) as a  "
+        		+ "inner join "
+        		+ "(select distinct judgeWallet, avg(score) as ascore from review group by judgeWallet order by ascore desc limit 1) as b  "
+        		+ "on a.ascore = b.ascore;";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String judgeWallet = resultSet.getString("judgeWallet");
+            
+            user users = new user(judgeWallet);
+            bigSponsors.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return bigSponsors;
+    }
+    
     public List<judge> listAllJudges() throws SQLException {
         List<judge> listJudge = new ArrayList<judge>();        
         String sql = "SELECT * FROM judge";      
