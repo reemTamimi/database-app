@@ -61,8 +61,11 @@ public class ControlServlet extends HttpServlet {
         	case "/root":
         		rootPage(request,response);
         		break;
-        	case "/contestant":
-        		contestantPage(request,response,request.getParameter("pattern"));
+        	case "/contest_search":
+        		contestantPage_search(request,response, request.getParameter("pattern"));
+        		break;
+        	case "/contestant_submission":
+        		contestantPage_submit(request,response);
         		break;
 //        	case "/sponsor":
 //        		sponsorPage(request,response);
@@ -109,11 +112,18 @@ public class ControlServlet extends HttpServlet {
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
-	    private void contestantPage(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
+	    private void contestantPage_search(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
 	    	System.out.println("contestant view");
 	    	
-	    	String contestWallet = request.getParameter("walletAddress");
-	    	String submission = request.getParameter("judges");
+			request.setAttribute("listContest", userDAO.listContests(pattern));
+	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
+	    }
+	    
+	    private void contestantPage_submit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("contestant view");
+	    	
+	    	String contestWallet = request.getParameter("contestWallet");
+	    	String submission = request.getParameter("submission");
 	    	String contestantWallet = currentUser;
 	    	
 	    	Boolean b = contestWallet != null &
@@ -121,10 +131,11 @@ public class ControlServlet extends HttpServlet {
 	    		submission != null;
 	    	
 	    	if (b) {
+	    		System.out.println(contestWallet);
 		    	userDAO.insertSubmission(contestantWallet, contestWallet, submission);
 	    	}
 	    	
-			request.setAttribute("listContest", userDAO.listContests(pattern));
+			request.setAttribute("listContest", userDAO.listContests(""));
 	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
 	    }
 	    
@@ -223,7 +234,7 @@ public class ControlServlet extends HttpServlet {
 						sponsorCreate(request, response);
 						break;
 					case "contestant":
-						contestantPage(request, response, "");
+						contestantPage_search(request, response, "");
 						break;
 					case "judge":
 						judgePage(request, response);
