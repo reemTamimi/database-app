@@ -306,7 +306,7 @@ public class userDAO
     
       public void insertSubmission(String contestantWallet, String contestWallet, String submission) throws SQLException {
     	connect_func(); 
-		String sql = "insert into submission(contestantWallet,contestWallet,submission) values (?, ?, ?)";
+		String sql = "insert into submission(contestantWallet,contestWallet,submissionFile) values (?, ?, ?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		preparedStatement.setString(1, contestantWallet);
 		preparedStatement.setString(2, contestWallet);
