@@ -34,6 +34,47 @@
             </c:forEach>
         </table>
 	</div>
+	
+<h1>Big Sponsors</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${bigSponsors}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Top Judges</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${topJudges}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+
+<h1>Best Contestants</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${bestContestants}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+	
 	</div>
 
 </body>

@@ -99,6 +99,70 @@ public class userDAO
         return listUser;
     }
     
+    public List<user> bigSponsors() throws SQLException {
+        List<user> bigSponsors = new ArrayList<user>();        
+        String sql = "select a.sponsorWallet from "
+        		+ "(select sponsorWallet,count(contestWallet) as countContest from contestSponsor group by sponsorWallet order by countContest) as a "
+        		+ "inner join "
+        		+ "(select distinct sponsorWallet,count(contestWallet) as countContest from contestSponsor group by sponsorWallet order by countContest desc limit 1) as b "
+        		+ "on a.countContest = b.countContest;";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String sponsorWallet = resultSet.getString("sponsorWallet");
+            
+            user users = new user(sponsorWallet);
+            bigSponsors.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return bigSponsors;
+    }
+    
+    public List<user> topJudges() throws SQLException {
+        List<user> topJudges = new ArrayList<user>();        
+        String sql = "select a.judgeWallet from "
+        		+ "(select judgeWallet,avg(score) as ascore from review group by judgeWallet order by ascore) as a  "
+        		+ "inner join "
+        		+ "(select distinct judgeWallet, avg(score) as ascore from review group by judgeWallet order by ascore desc limit 1) as b  "
+        		+ "on a.ascore = b.ascore;";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String judgeWallet = resultSet.getString("judgeWallet");
+            
+            user users = new user(judgeWallet);
+            topJudges.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return topJudges;
+    }
+    
+    public List<user> bestContestants() throws SQLException {
+        List<user> bestContestants = new ArrayList<user>();        
+        String sql = "select walletAddress from contestant a "
+        		+ "join (select distinct rewardBalance from contestant order by rewardBalance desc limit 1) b "
+        		+ "on a.rewardBalance = b.rewardBalance;";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            
+            user users = new user(walletAddress);
+            bestContestants.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return bestContestants;
+    }
+    
     public List<judge> listAllJudges() throws SQLException {
         List<judge> listJudge = new ArrayList<judge>();        
         String sql = "SELECT * FROM judge";      
