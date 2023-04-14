@@ -163,6 +163,44 @@ public class userDAO
         return bestContestants;
     }
     
+    public List<user> sleepyContestants() throws SQLException {
+        List<user> sleepyContestants = new ArrayList<user>();        
+        String sql = "select u.walletAddress from users u where userRole = 'contestant' and u.walletAddress not in"
+        		+ "(select s.contestantWallet from submission s);";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            
+            user users = new user(walletAddress);
+            sleepyContestants.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return sleepyContestants;
+    }
+    
+    public List<user> toughContests() throws SQLException {
+        List<user> toughContests = new ArrayList<user>();        
+        String sql = "select s.contestWallet from submission s group by s.contestWallet having count(s.contestantWallet) < 10 and s.contestWallet in "
+        		+ "(select c.walletAddress from contest c where c.contestStatus = 'past')";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("walletAddress");
+            
+            user users = new user(walletAddress);
+            toughContests.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return toughContests;
+    }
+    
     public List<judge> listAllJudges() throws SQLException {
         List<judge> listJudge = new ArrayList<judge>();        
         String sql = "SELECT * FROM judge";      

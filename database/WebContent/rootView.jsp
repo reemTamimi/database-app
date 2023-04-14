@@ -74,6 +74,32 @@
         </table>
 	</div>
 	
+<h1>Sleepy Contestants</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${sleepyContestants}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Tough Contest</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${toughContests}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
 	
 	</div>
 
