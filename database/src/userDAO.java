@@ -201,6 +201,60 @@ public class userDAO
         return toughContests;
     }
     
+    public List<user> copyCats(String contestantWallet) throws SQLException {
+    	List<user> copyCats = new ArrayList<user>();   
+        String sql1 = "create or replace view sublist as\n"
+        		+ "select contestantWallet from submission where contestWallet in\n"
+        		+ "(select contestWallet from submission\n"
+        		+ "where contestantWallet = '" + contestantWallet + "');";
+        		
+        String sql2 = "create or replace view subcounts as\n"
+        		+ "select contestantWallet, count(contestWallet) as cnt from submission\n"
+        		+ "where contestantWallet in \n"
+        		+ "(select contestantWallet from sublist)\n"
+        		+ "group by contestantWallet;";
+        		
+        String sql3 = "select t1.contestantWallet from\n"
+        		+ "(select * from subcounts) t1, \n"
+        		+ "(select * from subcounts where contestantWallet = '" + contestantWallet + "') t2\n"
+        		+ "where t1.cnt = t2.cnt;";    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        statement.executeUpdate(sql1);
+        statement.executeUpdate(sql2);
+        ResultSet resultSet = statement.executeQuery(sql3);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("contestantWallet");
+            
+            user users = new user(walletAddress);
+            copyCats.add(users);
+        }        
+        resultSet.close();
+        disconnect();     
+    	
+    	return copyCats;
+    }
+    
+    public List<user> listActiveContestants() throws SQLException {
+        List<user> listContestants = new ArrayList<user>();        
+        String sql = "SELECT distinct contestantWallet FROM submission";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("contestantWallet");
+            
+            user contestant = new user(walletAddress);
+            listContestants.add(contestant);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listContestants;
+    }
+    
     public List<judge> listAllJudges() throws SQLException {
         List<judge> listJudge = new ArrayList<judge>();        
         String sql = "SELECT * FROM judge";      
@@ -325,7 +379,9 @@ public class userDAO
         preparedStatement.close();
     }
     
-    public void insertContest(contest newContest) throws SQLException {
+    public void insertContest(contest newContest, String sponsorWallet, String[] judgeList) throws SQLException {
+    	
+    	// insert contest
     	connect_func(); 
 		String sql = "insert into contest(walletAddress,title,startDate,endDate,contestStatus," + 
 				"sponsorFee,requirements) values (?, ?, ?, ?, ?, ?, ?)";
@@ -337,6 +393,32 @@ public class userDAO
 			preparedStatement.setString(5, newContest.getStatus());	
 			preparedStatement.setDouble(6, newContest.getFee());
 			preparedStatement.setString(7, newContest.getRequirements());	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+        
+        //insert contest sponsor
+        connect_func(); 
+		String sql2 = "insert into contestSponsor(contestWallet,sponsorWallet) values (?, ?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql2);
+			preparedStatement.setString(1, newContest.getWallet());
+			preparedStatement.setString(2, sponsorWallet);	
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+        
+        // insert contest judge
+        connect_func(); 
+		String sql3 = "insert into contestJudge(contestWallet,judgeWallet) values ";
+		for (int j = 0; j<judgeList.length; j++) {
+			sql3 = sql3.format("%s ('%s','%s')", sql3, newContest.getWallet(), judgeList[j]);
+			if (j < judgeList.length - 1) {
+				sql3 = sql3 + ", ";
+			}
+		}
+		
+		System.out.println(sql3);
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql3);
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -356,7 +438,7 @@ public class userDAO
     
     public void insertSubmissionGrade(grade newSubmissionGrade) throws SQLException {
     	connect_func(); 
-		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?,?)";
+		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?, ?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 			preparedStatement.setString(1, newSubmissionGrade.getContestant());
 			preparedStatement.setString(2, newSubmissionGrade.getContest());
