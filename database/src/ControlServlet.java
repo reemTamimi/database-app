@@ -56,10 +56,13 @@ public class ControlServlet extends HttpServlet {
         	case "/initialize":
         		userDAO.init();
         		System.out.println("Database successfully initialized!");
-        		rootPage(request,response);
+        		rootPage(request,response,"");
+        		break;
+        	case "/find_copycats":
+        		rootPage(request,response, request.getParameter("contestantWallet"));
         		break;
         	case "/root":
-        		rootPage(request,response);
+        		rootPage(request,response,"");
         		break;
         	case "/contest_search":
         		contestantPage_search(request,response, request.getParameter("pattern"));
@@ -103,7 +106,7 @@ public class ControlServlet extends HttpServlet {
 	        System.out.println("listPeople finished: 111111111111111111111111111111111111");
 	    }
 	    	        
-	    private void rootPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String contestantWallet) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
 			request.setAttribute("bigSponsors", userDAO.bigSponsors());
@@ -111,6 +114,8 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("bestContestants", userDAO.bestContestants());
 			request.setAttribute("sleepyContestants", userDAO.sleepyContestants());
 			request.setAttribute("toughContests", userDAO.toughContests());
+			request.setAttribute("contestants", userDAO.listActiveContestants());
+			request.setAttribute("copyCats", userDAO.copyCats(contestantWallet));
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
@@ -162,7 +167,7 @@ public class ControlServlet extends HttpServlet {
 	    	String contestEnd = request.getParameter("endDate");
 	    	String sponsorFee = request.getParameter("sponsorFee");
 	    	String contestReq = request.getParameter("requirements");
-	    	String judgeList = request.getParameter("judges");
+	    	String[] judgeList = request.getParameterValues("judges");
 	    	
 //	    	System.out.println("sponsor params passed...");
 //	    	System.out.println(judgeList);
@@ -183,7 +188,7 @@ public class ControlServlet extends HttpServlet {
 		    	newContest.setStatus("opened");
 		    	newContest.setRequirements(contestReq);
 		    	
-		    	userDAO.insertContest(newContest);
+		    	userDAO.insertContest(newContest, currentUser, judgeList);
 	    	}
 	    	
 			request.setAttribute("listJudge", userDAO.listAllJudges());
@@ -230,7 +235,7 @@ public class ControlServlet extends HttpServlet {
 				String userRole = userDAO.getUser(walletAddress).getRole();
 				switch(userRole) {
 					case "root":
-						rootPage(request, response);
+						rootPage(request, response,"");
 						break;
 					case "sponsor":
 						sponsorCreate(request, response);
