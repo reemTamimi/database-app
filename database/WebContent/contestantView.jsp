@@ -19,6 +19,7 @@
 	<a href="login.jsp" target="_self" > logout</a><br><br> 
 
 <h1>List of contests</h1>
+<h3>Filter for single contest prior to submitting!</h3>
     <div align="center">
     	<form action="contestant_submission">
 	        <table border="1" cellpadding="6">
