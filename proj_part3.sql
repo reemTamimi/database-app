@@ -56,6 +56,14 @@ select j.judgeWallet from contestJudge j where j.contestWallet in
 select s.contestWallet from submission s group by s.contestWallet having count(s.contestantWallet) < 10 and s.contestWallet in 
 (select c.walletAddress from contest c where c.contestStatus = "past");
 
+# 9. copy cats
+select contestantWallet from
+(select contestantWallet, count(contestWallet) as cnt from submission where contestWallet in
+(select contestWallet from submission where contestantWallet = '0x000000000000000000000000000000000000002A')
+group by contestantWallet)
+where cnt in
+(select count(contestWallet) from submission where contestantWallet = '0x000000000000000000000000000000000000002A' group by contestantWallet);
+
 
 # this query worked to fix the timezone issue; idk how lol
 set global time_zone = '+3:00';
