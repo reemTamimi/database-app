@@ -100,6 +100,27 @@
         </table>
 	</div>
 	
+<h1>Copy Cats</h1>
+<div align="center">
+	<form action = "find_copycats">
+		<select name="contestantWallet">
+	            <c:forEach var="users" items="${contestants}">
+	                    <option value="${users.getWallet()}">${users.getWallet()}</option>
+	            </c:forEach>
+		</select>
+		<input type="submit" value="Search!"/>
+	</form>
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${copyCats}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
 	
 	</div>
 
