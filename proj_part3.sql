@@ -57,12 +57,21 @@ select s.contestWallet from submission s group by s.contestWallet having count(s
 (select c.walletAddress from contest c where c.contestStatus = "past");
 
 # 9. copy cats
-select contestantWallet from
-(select contestantWallet, count(contestWallet) as cnt from submission where contestWallet in
-(select contestWallet from submission where contestantWallet = '0x000000000000000000000000000000000000002A')
-group by contestantWallet)
-where cnt in
-(select count(contestWallet) from submission where contestantWallet = '0x000000000000000000000000000000000000002A' group by contestantWallet);
+create or replace view sublist as
+select contestantWallet from submission where contestWallet in
+(select contestWallet from submission
+where contestantWallet = '0x000000000000000000000000000000000000006A');
+
+create or replace view subcounts as
+select contestantWallet, count(contestWallet) as cnt from submission
+where contestantWallet in 
+(select contestantWallet from sublist)
+group by contestantWallet;
+
+select t1.contestantWallet from
+(select * from subcounts) t1, 
+(select * from subcounts where contestantWallet = '0x000000000000000000000000000000000000006A') t2
+where t1.cnt = t2.cnt;
 
 
 # this query worked to fix the timezone issue; idk how lol
