@@ -143,6 +143,25 @@ public class userDAO
         return topJudges;
     }
     
+    public ArrayList<String> commonContests(String c1, String c2) throws SQLException {
+        ArrayList<String> common = new ArrayList<String>();        
+        String sql = "select contestWallet from submission\n"
+        		+ "where contestantWallet in ('" + c1 + "','" + c2 + "')\n"
+        		+ "group by contestWallet having count(contestantWallet)=2;";    
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String res = resultSet.getString("contestWallet");
+            
+            common.add(res);
+        }        
+        resultSet.close();
+        disconnect();        
+        return common;
+    }
+    
     public List<user> bestContestants() throws SQLException {
         List<user> bestContestants = new ArrayList<user>();        
         String sql = "select walletAddress from contestant a "
@@ -184,14 +203,24 @@ public class userDAO
     
     public List<user> toughContests() throws SQLException {
         List<user> toughContests = new ArrayList<user>();        
-        String sql = "select s.contestWallet from submission s group by s.contestWallet having count(s.contestantWallet) < 10 and s.contestWallet in "
-        		+ "(select c.walletAddress from contest c where c.contestStatus = 'past')";    
+        String sql = "select contestWallet from \n"
+        		+ "(\n"
+        		+ "	select * from submission where contestWallet in\n"
+        		+ "	(select walletAddress from contest where contestStatus = 'past')\n"
+        		+ ") as t1 group by contestWallet having count(contestantWallet)<10\n"
+        		+ "union\n"
+        		+ "(\n"
+        		+ "	select walletAddress from contest\n"
+        		+ "    where contestStatus = 'past'\n"
+        		+ "    and contestStatus not in\n"
+        		+ "		(select contestWallet from submission)\n"
+        		+ ");";    
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
          
         while (resultSet.next()) {
-            String walletAddress = resultSet.getString("walletAddress");
+            String walletAddress = resultSet.getString("contestWallet");
             
             user users = new user(walletAddress);
             toughContests.add(users);
