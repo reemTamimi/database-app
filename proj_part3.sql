@@ -53,8 +53,18 @@ select j.judgeWallet from contestJudge j where j.contestWallet in
 (select c.walletAddress from contest c where contestStatus = "past");
 
 # 8. tough contests
-select s.contestWallet from submission s group by s.contestWallet having count(s.contestantWallet) < 10 and s.contestWallet in 
-(select c.walletAddress from contest c where c.contestStatus = "past");
+select contestWallet from 
+(
+	select * from submission where contestWallet in
+	(select walletAddress from contest where contestStatus = 'past')
+) as t1 group by contestWallet having count(contestantWallet)<10
+union
+(
+	select walletAddress from contest
+    where contestStatus = 'past'
+    and contestStatus not in
+		(select contestWallet from submission)
+);
 
 # 9. copy cats
 create or replace view sublist as
