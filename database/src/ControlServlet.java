@@ -128,7 +128,6 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("contestants", userDAO.listActiveContestants());
 			request.setAttribute("copyCats", userDAO.copyCats(copiedcat));
 			request.setAttribute("statistics", userDAO.statistics());
-
 			request.setAttribute("copiedcat", copiedcat);
 			request.setAttribute("c1", c1);
 			request.setAttribute("c2", c2);
