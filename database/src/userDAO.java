@@ -201,6 +201,32 @@ public class userDAO
         return sleepyContestants;
     }
     
+    public List<user> busyJudges() throws SQLException {
+        List<user> busyJudges = new ArrayList<user>();        
+        String sql1 = "create or replace view pastcontests as "
+        		+ "select * from contestJudge where contestWallet in "
+        		+ "(select walletAddress from contest where contestStatus = 'past');"; 
+        String sql2 = "select judgeWallet from "
+        		+ "(select judgeWallet, count(contestWallet) as cnt from pastcontests group by judgeWallet) t1, "
+        		+ "(select count(distinct(contestWallet)) as cnt from pastcontests) t2 "
+        		+ "where t1.cnt = t2.cnt;"; 
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        statement.executeUpdate(sql1);
+        ResultSet resultSet = statement.executeQuery(sql2);
+         
+        while (resultSet.next()) {
+            String walletAddress = resultSet.getString("judgeWallet");
+            
+            user users = new user(walletAddress);
+            busyJudges.add(users);
+        }        
+        resultSet.close();
+        disconnect();        
+        return busyJudges;
+    }
+    
     public List<user> toughContests() throws SQLException {
         List<user> toughContests = new ArrayList<user>();        
         String sql = "select contestWallet from \n"

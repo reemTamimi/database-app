@@ -117,6 +117,7 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("topJudges", userDAO.topJudges());
 			request.setAttribute("bestContestants", userDAO.bestContestants());
 			request.setAttribute("sleepyContestants", userDAO.sleepyContestants());
+			request.setAttribute("busyJudges", userDAO.busyJudges());
 			request.setAttribute("toughContests", userDAO.toughContests());
 			request.setAttribute("contestants", userDAO.listActiveContestants());
 			request.setAttribute("copyCats", userDAO.copyCats(copiedcat));
