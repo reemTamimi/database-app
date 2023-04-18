@@ -45,7 +45,7 @@ public class userDAO
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e);
             }
-            connect = (Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/projdb?allowPublicKeyRetrieval=true&useSSL=false&user=john&password=pass1234&serverTimezone=UTC");
+            connect = (Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/projdb?allowPublicKeyRetrieval=true&useSSL=false&user=john&password=pass1234");
             System.out.println(connect);
         }
     }
@@ -201,32 +201,6 @@ public class userDAO
         return sleepyContestants;
     }
     
-    public List<user> busyJudges() throws SQLException {
-        List<user> busyJudges = new ArrayList<user>();        
-        String sql1 = "create or replace view pastcontests as "
-        		+ "select * from contestJudge where contestWallet in "
-        		+ "(select walletAddress from contest where contestStatus = 'past');"; 
-        String sql2 = "select judgeWallet from "
-        		+ "(select judgeWallet, count(contestWallet) as cnt from pastcontests group by judgeWallet) t1, "
-        		+ "(select count(distinct(contestWallet)) as cnt from pastcontests) t2 "
-        		+ "where t1.cnt = t2.cnt;"; 
-        
-        connect_func();      
-        statement = (Statement) connect.createStatement();
-        statement.executeUpdate(sql1);
-        ResultSet resultSet = statement.executeQuery(sql2);
-         
-        while (resultSet.next()) {
-            String walletAddress = resultSet.getString("judgeWallet");
-            
-            user users = new user(walletAddress);
-            busyJudges.add(users);
-        }        
-        resultSet.close();
-        disconnect();        
-        return busyJudges;
-    }
-    
     public List<user> toughContests() throws SQLException {
         List<user> toughContests = new ArrayList<user>();        
         String sql = "select contestWallet from \n"
@@ -292,38 +266,23 @@ public class userDAO
     	return copyCats;
     }
     
-    public List<number> statistics() throws SQLException {
-        List<number> listStatistics = new ArrayList<number>();        
-        String sql1 = "select count(sponsorWallet) as res from contestSponsor where contestWallet in (select walletAddress from contest where contestStatus = 'past');";
-        String sql2 = "select count(judgeWallet) as res from contestJudge where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
-        String sql3 = "select count(contestantWallet) as res from submission where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
-        String sql4 = "select count(walletAddress) as res from contest where contestStatus = 'past';";
-        String sql5 = "select sum(sponsorFee) as res from contest where contestStatus = 'past';";
-        String sql6 = "select sum(rewardBalance) as res from judge where walletAddress in "
-        		+ "(select judgeWallet from contestJudge where contestWallet in "
-        		+ "(select walletAddress from contest where contestStatus = 'past'));";
-        String sql7 = "select sum(rewardBalance) as res from contestant where walletAddress in "
-        		+ "(select contestantWallet from submission where contestWallet in "
-        		+ "(select walletAddress from contest where contestStatus = 'past'));"; 
+    public double getUserReward(String wallet, String userType) throws SQLException {
+    	  
+    	String sql = "select rewardBalance from " + userType + " where walletAddress = '" + wallet + "';";
+
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
         
-        String[] sqlCommands = {sql1,sql2,sql3,sql4,sql5,sql6,sql7};
-        connect_func();
-        
-        for (int i = 0; i < sqlCommands.length; i++) {
-        	statement = (Statement) connect.createStatement();
-        	ResultSet resultSet = statement.executeQuery(sqlCommands[i]);
-         
-        	while (resultSet.next()) {
-        		Integer sponsors = resultSet.getInt("res");
-            
-        		number stat = new number(sponsors);
-        		listStatistics.add(stat);
-        	}        
-        	resultSet.close();
+        double balance = 0;
+        while (resultSet.next()) {
+        	balance = resultSet.getDouble("rewardBalance");
+        	break;
         }
         
+        resultSet.close();
         disconnect();
-        return listStatistics;
+        return(balance);
     }
     
     public List<user> listActiveContestants() throws SQLException {
@@ -366,10 +325,7 @@ public class userDAO
     public List<submission> listSubmissions(String activeJudge) throws SQLException {
         List<submission> listSubmission = new ArrayList<submission>();        
         //String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
-        String sql = "SELECT s.contestantWallet, s.contestWallet, s.submissionFile, c.title, c.requirements FROM submission s "
-        		+ "INNER JOIN contest c ON s.contestWallet =  c.walletAddress "
-        		+ "WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')"
-        		+ "and s.contestantWallet not in (select contestantWallet from submissionGrade where judgeWallet like '" + activeJudge + "')";
+        String sql = "SELECT s.contestantWallet, s.contestWallet, s.submissionFile, c.title, c.requirements FROM submission s INNER JOIN contest c ON s.contestWallet =  c.walletAddress WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -421,6 +377,44 @@ public class userDAO
         resultSet.close();
         disconnect();        
         return listContest;
+    }
+    
+    public void distributeFunds(List<contest> closedContests) throws SQLException {
+    	
+    	connect_func();
+        statement = (Statement) connect.createStatement();
+    	
+    	for (int c=0; c<closedContests.size(); c++) {
+	    	String sql1 = "create or replace view thiscontest as\n"
+	    			+ "	select walletAddress, sponsorFee from contest\n"
+	    			+ "	where walletAddress = '" + closedContests.get(c).getWallet() + "';";
+	    	String sql2 = "create or replace view thesejudges as\n"
+	    			+ "	select judgeWallet from contestJudge\n"
+	    			+ "    where contestWallet in (select walletAddress from thiscontest);";
+	    	String sql3 = "update judge, thiscontest, thesejudges\n"
+	    			+ "set rewardBalance = rewardBalance + ((thiscontest.sponsorFee * 0.2) / (select count(*) from thesejudges))\n"
+	    			+ "where judge.walletAddress in (select judgeWallet from thesejudges);";
+	    	String sql4 = "create or replace view thesecontestants as\n"
+	    			+ "	select contestantWallet, grade from submissionGrade\n"
+	    			+ "    where contestWallet in (select walletAddress from thiscontest);";
+	    	String sql5 = "update contestant, thiscontest, thesecontestants\n"
+	    			+ "set rewardBalance = rewardBalance +\n"
+	    			+ "	((thiscontest.sponsorFee * 0.8 * (select grade from thesecontestants where contestantWallet = contestant.walletAddress)) / \n"
+	    			+ "    (select count(*) from thesecontestants))\n"
+	    			+ "where contestant.walletAddress in (select contestantWallet from thesecontestants);";
+	    	String sql6 = "update contest\n"
+	    			+ "set contestStatus = 'past'\n"
+	    			+ "where walletAddress = '" + closedContests.get(c).getWallet() + "';";
+	    	
+	    	statement.executeUpdate(sql1);
+	    	statement.executeUpdate(sql2);
+	    	statement.executeUpdate(sql3);
+	    	statement.executeUpdate(sql4);
+	    	statement.executeUpdate(sql5);
+	    	statement.executeUpdate(sql6);
+    	}
+
+        disconnect();
     }
     
     public List<contest> listClosedContests(String activeSponsor) throws SQLException {
@@ -528,14 +522,14 @@ public class userDAO
         preparedStatement.close();
     }
     
-    public void insertSubmissionGrade(String contestantWallet, String contestWallet, String judgeWallet, String grade) throws SQLException {
+    public void insertSubmissionGrade(grade newSubmissionGrade) throws SQLException {
     	connect_func(); 
 		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?, ?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-			preparedStatement.setString(1, contestantWallet);
-			preparedStatement.setString(2, contestWallet);
-			preparedStatement.setString(3, judgeWallet);
-			preparedStatement.setString(4, grade);
+			preparedStatement.setString(1, newSubmissionGrade.getContestant());
+			preparedStatement.setString(2, newSubmissionGrade.getContest());
+			preparedStatement.setString(3, newSubmissionGrade.getJudge());
+			preparedStatement.setString(4, newSubmissionGrade.getGrade());
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
