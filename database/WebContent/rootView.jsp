@@ -34,6 +34,151 @@
             </c:forEach>
         </table>
 	</div>
+	
+<h1>Big Sponsors</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${bigSponsors}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Common Contests</h1>
+<div align="center">
+	<form action = "find_common">
+		<select name="contestant1">
+	            <c:forEach var="users" items="${contestants}">
+	                    <option value="${users.getWallet()}">${users.getWallet()}</option>
+	            </c:forEach>
+		</select>
+		<select name="contestant2">
+	            <c:forEach var="users" items="${contestants}">
+	                    <option value="${users.getWallet()}">${users.getWallet()}</option>
+	            </c:forEach>
+		</select>
+		<input type="submit" value="Search!"/>
+	</form>
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>${c1} & ${c2}</th>
+            </tr>
+            <c:forEach var="common" items="${commonContests}">
+                <tr style="text-align:center">
+                    <td><c:out value="${common}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Top Judges</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${topJudges}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+
+<h1>Best Contestants</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${bestContestants}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Sleepy Contestants</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${sleepyContestants}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Busy Judges</h1>
+ <div align="center">
+         <table border="1" cellpadding="6">
+             <tr>
+                 <th>Wallet Address</th>
+             </tr>
+             <c:forEach var="users" items="${busyJudges}">
+                 <tr style="text-align:center">
+                     <td><c:out value="${users.getWallet()}" /></td>
+             </c:forEach>
+         </table>
+ 	</div>
+	
+<h1>Tough Contest</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${toughContests}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Copy Cats</h1>
+<div align="center">
+	<form action = "find_copycats">
+		<select name="contestantWallet">
+	            <c:forEach var="users" items="${contestants}">
+	                    <option value="${users.getWallet()}">${users.getWallet()}</option>
+	            </c:forEach>
+		</select>
+		<input type="submit" value="Search!"/>
+	</form>
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Copied Cat: ${copiedcat}</th>
+            </tr>
+            <c:forEach var="users" items="${copyCats}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Past Statistics</h1>
+ <div align="center">
+         <table border="1" cellpadding="6">
+             <tr>
+                 <th>Sponsors</th>
+                 <th>Judges</th>
+                 <th>Contestants</th>
+                 <th>Contests</th>
+                 <th>Sponsor Fees</th>
+                 <th>Judge Reward Balance</th>
+                 <th>Contestant Reward Balance</th>
+
+             </tr>
+             <c:forEach var="num" items="${statistics}">
+                 <!-- <tr style="text-align:center"> -->
+                     <td style="text-align:center"><c:out value="${num.getNumber()}" /></td>
+             </c:forEach>
+	
+	
 	</div>
 
 </body>

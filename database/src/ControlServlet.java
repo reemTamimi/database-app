@@ -56,14 +56,26 @@ public class ControlServlet extends HttpServlet {
         	case "/initialize":
         		userDAO.init();
         		System.out.println("Database successfully initialized!");
-        		rootPage(request,response);
+        		rootPage(request,response,"","","");
+        		break;
+        	case "/find_copycats":
+        		rootPage(request,response, request.getParameter("contestantWallet"),"","");
+        		break;
+        	case "/find_common":
+        		rootPage(request,response,"",request.getParameter("contestant1"),request.getParameter("contestant2"));
         		break;
         	case "/root":
-        		rootPage(request,response);
+        		rootPage(request,response,"","","");
         		break;
-        	case "/contestant":
-        		contestantPage(request,response,request.getParameter("pattern"));
+        	case "/contest_search":
+        		contestantPage_search(request,response, request.getParameter("pattern"));
         		break;
+        	case "/contestant_submission":
+        		contestantPage_submit(request,response);
+        		break;
+        	case "/judge_submission":
+         		judgePage(request,response);
+         		break;
 //        	case "/sponsor":
 //        		sponsorPage(request,response);
 //        		break;
@@ -72,6 +84,9 @@ public class ControlServlet extends HttpServlet {
         		break;
         	case "/sponsor_distribute":
         		sponsorDistribute(request,response);
+        		break;
+        	case "/sponsor_do_distribute":
+        		sponsorDoDistribute(request,response);
         		break;
         	case "/logout":
         		logout(request,response);
@@ -100,15 +115,52 @@ public class ControlServlet extends HttpServlet {
 	        System.out.println("listPeople finished: 111111111111111111111111111111111111");
 	    }
 	    	        
-	    private void rootPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String copiedcat, String c1, String c2) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
+			request.setAttribute("bigSponsors", userDAO.bigSponsors());
+			request.setAttribute("commonContests", userDAO.commonContests(c1,c2));
+			request.setAttribute("topJudges", userDAO.topJudges());
+			request.setAttribute("bestContestants", userDAO.bestContestants());
+			request.setAttribute("sleepyContestants", userDAO.sleepyContestants());
+			request.setAttribute("busyJudges", userDAO.busyJudges());
+			request.setAttribute("toughContests", userDAO.toughContests());
+			request.setAttribute("contestants", userDAO.listActiveContestants());
+			request.setAttribute("copyCats", userDAO.copyCats(copiedcat));
+			request.setAttribute("statistics", userDAO.statistics());
+			request.setAttribute("copiedcat", copiedcat);
+			request.setAttribute("c1", c1);
+			request.setAttribute("c2", c2);
+
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
-	    private void contestantPage(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
+	    private void contestantPage_search(HttpServletRequest request, HttpServletResponse response, String pattern) throws ServletException, IOException, SQLException{
 	    	System.out.println("contestant view");
+	    	
 			request.setAttribute("listContest", userDAO.listContests(pattern));
+			request.setAttribute("reward", userDAO.getUserReward(currentUser, "contestant"));
+	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
+	    }
+	    
+	    private void contestantPage_submit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("contestant view");
+	    	
+	    	String contestWallet = request.getParameter("contestWallet");
+	    	String submission = request.getParameter("submission");
+	    	String contestantWallet = currentUser;
+	    	
+	    	Boolean b = contestWallet != null &
+	    		contestantWallet != null &
+	    		submission != null;
+	    	
+	    	if (b) {
+	    		System.out.println(contestWallet);
+		    	userDAO.insertSubmission(contestantWallet, contestWallet, submission);
+	    	}
+	    	
+			request.setAttribute("listContest", userDAO.listContests(""));
+			request.setAttribute("reward", userDAO.getUserReward(currentUser, "contestant"));
 	    	request.getRequestDispatcher("contestantView.jsp").forward(request, response);
 	    }
 	    
@@ -133,7 +185,7 @@ public class ControlServlet extends HttpServlet {
 	    	String contestEnd = request.getParameter("endDate");
 	    	String sponsorFee = request.getParameter("sponsorFee");
 	    	String contestReq = request.getParameter("requirements");
-	    	String judgeList = request.getParameter("judges");
+	    	String[] judgeList = request.getParameterValues("judges");
 	    	
 //	    	System.out.println("sponsor params passed...");
 //	    	System.out.println(judgeList);
@@ -154,7 +206,7 @@ public class ControlServlet extends HttpServlet {
 		    	newContest.setStatus("opened");
 		    	newContest.setRequirements(contestReq);
 		    	
-		    	userDAO.insertContest(newContest);
+		    	userDAO.insertContest(newContest, currentUser, judgeList);
 	    	}
 	    	
 			request.setAttribute("listJudge", userDAO.listAllJudges());
@@ -168,7 +220,14 @@ public class ControlServlet extends HttpServlet {
 	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
 	    }
 	    
-	    
+	    private void sponsorDoDistribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+	    	System.out.println("sponsor do distribute");
+	    	
+	    	userDAO.distributeFunds(userDAO.listClosedContests(currentUser));
+	    	
+			request.setAttribute("listClosedContest", userDAO.listClosedContests(currentUser));
+	    	request.getRequestDispatcher("sponsorDistributeView.jsp").forward(request, response);
+	    }
 	    
 //	    private void sponsorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 //	    	//System.out.println("sponsor view");
@@ -180,7 +239,22 @@ public class ControlServlet extends HttpServlet {
 	    
 	    private void judgePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("judge view");
+	    	String contestantWallet = request.getParameter("contestantWallet");
+ 	    	String contestWallet = request.getParameter("contestWallet");
+ 	    	String judgeWallet = currentUser;
+ 	    	String grade = request.getParameter("grade");
+
+ 	    	Boolean b = contestWallet != null &
+ 		    		contestantWallet != null &
+ 		    		judgeWallet != null & 
+ 		    		grade != null;
+
+ 		    	if (b) {
+ 		    		System.out.println(judgeWallet);
+ 			    	userDAO.insertSubmissionGrade(contestantWallet, contestWallet, judgeWallet,grade);
+ 		    	}
 			request.setAttribute("listSubmission", userDAO.listSubmissions(currentUser));
+			request.setAttribute("reward", userDAO.getUserReward(currentUser, "judge"));
 	    	request.getRequestDispatcher("judgeView.jsp").forward(request, response);
 	    }
 	    
@@ -201,13 +275,13 @@ public class ControlServlet extends HttpServlet {
 				String userRole = userDAO.getUser(walletAddress).getRole();
 				switch(userRole) {
 					case "root":
-						rootPage(request, response);
+						rootPage(request, response,"","","");
 						break;
 					case "sponsor":
 						sponsorCreate(request, response);
 						break;
 					case "contestant":
-						contestantPage(request, response, "");
+						contestantPage_search(request, response, "");
 						break;
 					case "judge":
 						judgePage(request, response);

@@ -50,8 +50,8 @@
 				<tr>
 					<th>Requirements: </th>
 					<td align="center" colspan="3">
-						<input type="text" name="requirements" size="45" value="List Requirements" onfocus="this.value=''">
-						<!-- <textarea name="requirements" rows="4" cols="50"></textarea> -->
+						<!-- <input type="text" name="requirements" size="45" height="48" value="List Requirements" onfocus="this.value=''"> -->
+						<textarea name="requirements" rows="4" cols="50"></textarea>
 					</td>
 				</tr>
 			</table>
@@ -68,6 +68,6 @@
 		<form action="sponsor_distribute">
 			<input type="submit" value="View Closed Contests"/>
 		</form>
-	<!-- <a href="sponsorDistributeView.jsp" target="_self" >View Closed Contests</a><br><br> -->		
+	<!-- <a href="sponsorDistributeView.jsp" target="_self" >View Closed Contests</a><br><br> comment-->
 	</div>
 </body>
