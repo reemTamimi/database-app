@@ -113,6 +113,19 @@
         </table>
 	</div>
 	
+<h1>Busy Judges</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Wallet Address</th>
+            </tr>
+            <c:forEach var="users" items="${busyJudges}">
+                <tr style="text-align:center">
+                    <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
 <h1>Tough Contest</h1>
 <div align="center">
         <table border="1" cellpadding="6">
@@ -143,6 +156,26 @@
             <c:forEach var="users" items="${copyCats}">
                 <tr style="text-align:center">
                     <td><c:out value="${users.getWallet()}" /></td>
+            </c:forEach>
+        </table>
+	</div>
+	
+<h1>Past Statistics</h1>
+<div align="center">
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>Sponsors</th>
+                <th>Judges</th>
+                <th>Contestants</th>
+                <th>Contests</th>
+                <th>Sponsor Fees</th>
+                <th>Judge Reward Balance</th>
+                <th>Contestant Reward Balance</th>
+                
+            </tr>
+            <c:forEach var="num" items="${statistics}">
+                <!-- <tr style="text-align:center"> -->
+                    <td style="text-align:center"><c:out value="${num.getNumber()}" /></td>
             </c:forEach>
         </table>
 	</div>
