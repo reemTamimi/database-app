@@ -116,6 +116,7 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("toughContests", userDAO.toughContests());
 			request.setAttribute("contestants", userDAO.listActiveContestants());
 			request.setAttribute("copyCats", userDAO.copyCats(contestantWallet));
+			request.setAttribute("statistics", userDAO.statistics());
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
