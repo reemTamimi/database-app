@@ -366,7 +366,10 @@ public class userDAO
     public List<submission> listSubmissions(String activeJudge) throws SQLException {
         List<submission> listSubmission = new ArrayList<submission>();        
         //String sql = "SELECT * FROM submission WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
-        String sql = "SELECT s.contestantWallet, s.contestWallet, s.submissionFile, c.title, c.requirements FROM submission s INNER JOIN contest c ON s.contestWallet =  c.walletAddress WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')";
+        String sql = "SELECT s.contestantWallet, s.contestWallet, s.submissionFile, c.title, c.requirements FROM submission s "
+        		+ "INNER JOIN contest c ON s.contestWallet =  c.walletAddress "
+        		+ "WHERE contestWallet IN (SELECT contestWallet FROM contestJudge where judgeWallet like '" + activeJudge + "')"
+        		+ "and s.contestantWallet not in (select contestantWallet from submissionGrade where judgeWallet like '" + activeJudge + "')";
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -525,14 +528,14 @@ public class userDAO
         preparedStatement.close();
     }
     
-    public void insertSubmissionGrade(grade newSubmissionGrade) throws SQLException {
+    public void insertSubmissionGrade(String contestantWallet, String contestWallet, String judgeWallet, String grade) throws SQLException {
     	connect_func(); 
 		String sql = "insert into submissionGrade(contestantWallet,contestWallet,judgeWallet,grade) values (?, ?, ?, ?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-			preparedStatement.setString(1, newSubmissionGrade.getContestant());
-			preparedStatement.setString(2, newSubmissionGrade.getContest());
-			preparedStatement.setString(3, newSubmissionGrade.getJudge());
-			preparedStatement.setString(4, newSubmissionGrade.getGrade());
+			preparedStatement.setString(1, contestantWallet);
+			preparedStatement.setString(2, contestWallet);
+			preparedStatement.setString(3, judgeWallet);
+			preparedStatement.setString(4, grade);
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();

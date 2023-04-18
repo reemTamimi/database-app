@@ -73,6 +73,9 @@ public class ControlServlet extends HttpServlet {
         	case "/contestant_submission":
         		contestantPage_submit(request,response);
         		break;
+        	case "/judge_submission":
+        		judgePage(request,response);
+        		break;
 //        	case "/sponsor":
 //        		sponsorPage(request,response);
 //        		break;
@@ -225,6 +228,22 @@ public class ControlServlet extends HttpServlet {
 	    
 	    private void judgePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
 	    	System.out.println("judge view");
+	    	
+	    	String contestantWallet = request.getParameter("contestantWallet");
+	    	String contestWallet = request.getParameter("contestWallet");
+	    	String judgeWallet = currentUser;
+	    	String grade = request.getParameter("grade");
+	    	
+	    	Boolean b = contestWallet != null &
+		    		contestantWallet != null &
+		    		judgeWallet != null & 
+		    		grade != null;
+		    	
+		    	if (b) {
+		    		System.out.println(judgeWallet);
+			    	userDAO.insertSubmissionGrade(contestantWallet, contestWallet, judgeWallet,grade);
+		    	}
+	    	
 			request.setAttribute("listSubmission", userDAO.listSubmissions(currentUser));
 	    	request.getRequestDispatcher("judgeView.jsp").forward(request, response);
 	    }

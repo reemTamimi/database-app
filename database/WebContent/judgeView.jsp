@@ -15,6 +15,7 @@
 
 <h1>List of submissions</h1>
     <div align="center">
+    <form action="judge_submission">
         <table border="1" cellpadding="6">
             <tr>
             	<th style="display:none;">Contestant Wallet</th>
@@ -24,10 +25,11 @@
                 <th>Requirements</th>
                 <th>Grade [0-100]</th>
             </tr>
+            
             <c:forEach var="submissions" items="${listSubmission}">
                 <tr style="text-align:center">
-                	<td style="display:none;"><c:out value="${submissions.getContestant()}" /><input type="text" name="contestantWallet"></td>
-                	<td style="display:none;"><c:out value="${submissions.getContest()}" /><input type="text" name="contestWallet"></td>
+                	<td style="display:none;"><input type="text" name="contestantWallet" value="${submissions.getContestant()}"></td>
+                	<td style="display:none;"><input type="text" name="contestWallet" value="${submissions.getContest()}"></td>
                     <td><c:out value="${submissions.getTitle()}" /></td>
 <%--                     <td><a href="resources/${submissions.getSubmission()}" target="_blank">submission</a></td>
                     <td><a href="resources/${submissions.getRequirements()}" target="_blank">requirements</a></td> --%>
@@ -35,8 +37,11 @@
                     <td><c:out value="${submissions.getRequirements()}" /></td>
                     <td><input type="number" name="grade" value="0-100" onfocus="this.value''"></td>
                     <td><input type="submit" value="Submit!"></td>
+                </tr>
             </c:forEach>
         </table>
+
+        </form>
 	</div>
 	</div>
 
