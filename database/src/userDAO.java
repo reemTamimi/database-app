@@ -239,15 +239,15 @@ public class userDAO
     
     public List<number> statistics() throws SQLException {
         List<number> listStatistics = new ArrayList<number>();        
-        String sql1 = "select count(sponsorWallet) as cnt from contestSponsor where contestWallet in (select walletAddress from contest where contestStatus = 'past');";
-        String sql2 = "select count(judgeWallet) as cnt from contestJudge where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
-        String sql3 = "select count(contestantWallet) as cnt from submission where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
-        String sql4 = "select count(walletAddress) as cnt from contest where contestStatus = 'past';";
-        String sql5 = "select sum(sponsorFee) as cnt from contest where contestStatus = 'past';";
-        String sql6 = "select sum(rewardBalance) as cnt from judge where walletAddress in "
+        String sql1 = "select count(sponsorWallet) as res from contestSponsor where contestWallet in (select walletAddress from contest where contestStatus = 'past');";
+        String sql2 = "select count(judgeWallet) as res from contestJudge where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
+        String sql3 = "select count(contestantWallet) as res from submission where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
+        String sql4 = "select count(walletAddress) as res from contest where contestStatus = 'past';";
+        String sql5 = "select sum(sponsorFee) as res from contest where contestStatus = 'past';";
+        String sql6 = "select sum(rewardBalance) as res from judge where walletAddress in "
         		+ "(select judgeWallet from contestJudge where contestWallet in "
         		+ "(select walletAddress from contest where contestStatus = 'past'));";
-        String sql7 = "select sum(rewardBalance) as cnt from contestant where walletAddress in "
+        String sql7 = "select sum(rewardBalance) as res from contestant where walletAddress in "
         		+ "(select contestantWallet from submission where contestWallet in "
         		+ "(select walletAddress from contest where contestStatus = 'past'));"; 
         
@@ -259,7 +259,7 @@ public class userDAO
         	ResultSet resultSet = statement.executeQuery(sqlCommands[i]);
          
         	while (resultSet.next()) {
-        		Integer sponsors = resultSet.getInt("cnt");
+        		Integer sponsors = resultSet.getInt("res");
             
         		number stat = new number(sponsors);
         		listStatistics.add(stat);
