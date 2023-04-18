@@ -311,6 +311,40 @@ public class userDAO
         return(balance);
     }
     
+    public List<number> statistics() throws SQLException {
+        List<number> listStatistics = new ArrayList<number>();        
+        String sql1 = "select count(sponsorWallet) as cnt from contestSponsor where contestWallet in (select walletAddress from contest where contestStatus = 'past');";
+        String sql2 = "select count(judgeWallet) as cnt from contestJudge where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
+        String sql3 = "select count(contestantWallet) as cnt from submission where contestWallet in (select walletAddress from contest where contestStatus = 'past');"; 
+        String sql4 = "select count(walletAddress) as cnt from contest where contestStatus = 'past';";
+        String sql5 = "select sum(sponsorFee) as cnt from contest where contestStatus = 'past';";
+        String sql6 = "select sum(rewardBalance) as cnt from judge where walletAddress in "
+        		+ "(select judgeWallet from contestJudge where contestWallet in "
+        		+ "(select walletAddress from contest where contestStatus = 'past'));";
+        String sql7 = "select sum(rewardBalance) as cnt from contestant where walletAddress in "
+        		+ "(select contestantWallet from submission where contestWallet in "
+        		+ "(select walletAddress from contest where contestStatus = 'past'));"; 
+
+        String[] sqlCommands = {sql1,sql2,sql3,sql4,sql5,sql6,sql7};
+        connect_func();
+
+        for (int i = 0; i < sqlCommands.length; i++) {
+        	statement = (Statement) connect.createStatement();
+        	ResultSet resultSet = statement.executeQuery(sqlCommands[i]);
+
+        	while (resultSet.next()) {
+        		Integer sponsors = resultSet.getInt("cnt");
+
+        		number stat = new number(sponsors);
+        		listStatistics.add(stat);
+        	}        
+        	resultSet.close();
+        }
+
+        disconnect();
+        return listStatistics;
+    }
+    
     public List<user> listActiveContestants() throws SQLException {
         List<user> listContestants = new ArrayList<user>();        
         String sql = "SELECT distinct contestantWallet FROM submission";      

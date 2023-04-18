@@ -160,6 +160,24 @@
         </table>
 	</div>
 	
+<h1>Past Statistics</h1>
+ <div align="center">
+         <table border="1" cellpadding="6">
+             <tr>
+                 <th>Sponsors</th>
+                 <th>Judges</th>
+                 <th>Contestants</th>
+                 <th>Contests</th>
+                 <th>Sponsor Fees</th>
+                 <th>Judge Reward Balance</th>
+                 <th>Contestant Reward Balance</th>
+
+             </tr>
+             <c:forEach var="num" items="${statistics}">
+                 <!-- <tr style="text-align:center"> -->
+                     <td style="text-align:center"><c:out value="${num.getNumber()}" /></td>
+             </c:forEach>
+	
 	
 	</div>
 
